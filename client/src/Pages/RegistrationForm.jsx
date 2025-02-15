@@ -3,7 +3,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import axios from "axios";
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { Mail, Phone, MapPin, Building, User, Fingerprint, Check, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Building, User, Fingerprint, Check, Loader2, AlertCircle, ShieldCheck,FileText } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "../components/ui/alert";
 
@@ -222,7 +222,6 @@ const RegistrationForm = () => {
 
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <User className="w-5 h-5 text-[var(--primary-color)]" />
                 <User className="w-5 h-5 text-[var(--primary-color)]" />
                 <Input
                   type="text"

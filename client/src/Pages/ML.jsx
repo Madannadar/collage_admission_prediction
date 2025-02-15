@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { Building, User, Book, Clock, Percent, Users, Briefcase } from 'lucide-react';
+import { Building, User, Book, Clock, Percent, Users, Briefcase} from 'lucide-react';
+import Select from "react-select";
 
 const ML = () => {
   const [formData, setFormData] = useState({
@@ -19,15 +20,15 @@ const ML = () => {
   const [loading, setLoading] = useState(false); // For loading state
 
   const programOptions = [
-    'CS',
-    'ECE',
-    'ME',
-    'MBA',
-    'Civil',
-    'BioTech',
-    'Electrical',
-    'Architecture',
-    'Pharma',
+    { value: 'CS', label: 'CS' },
+    { value: 'ECE', label: 'ECE' },
+    { value: 'ME', label: 'ME' },
+    { value: 'MBA', label: 'MBA' },
+    { value: 'Civil', label: 'Civil' },
+    { value: 'BioTech', label: 'BioTech' },
+    { value: 'Electrical', label: 'Electrical' },
+    { value: 'Architecture', label: 'Architecture' },
+    { value: 'Pharma', label: 'Pharma' },
   ];
 
   const handleInputChange = (e) => {
