@@ -3,7 +3,6 @@ import { User } from "../models/userModal.js";
 import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudinary.js";
 // import jwt from "jsonwebtoken";
 // import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 import sendResponse from "../utils/apiResonse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -26,10 +25,10 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { collegeName, email, username, password, telephone, is_verified } =
+    const { collegeName, email, username, password, telephone, is_email_verified } =
         req.body;
 
-    if (!is_verified) {
+    if (!is_email_verified) {
         return sendResponse(
             res,
             "error",
@@ -87,15 +86,15 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     // Hash Password before saving
-    const bcrypt = await import("bcryptjs");
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const bcrypt = await import("bcryptjs");
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the user
     const user = await User.create({
         collegeName,
         avatar: avatar.url,
         email,
-        password: hashedPassword,
+        password: password,
         username: username.toLowerCase(),
         csv_file_path: csv.url,
         telephone: telephone || null,
@@ -124,50 +123,79 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 });
 
-// const loginUser = asyncHandler(async (req, res) => {
-//     const { email, password } = req.body;
+const loginUser = asyncHandler(async (req, res) => {
+    const { email, password, is_email_verified } = req.body;
 
-//     if (!email || !password) {
-//         throw new ApiError(400, "Email and password are required");
-//     }
+    // Check if email and password are provided
+    if (!email || !password) {
+        return sendResponse(res, "error", null, "Email and password are required", 400);
+    }
 
-//     const user = await User.findOne({ email }).select("+password");
-//     if (!user) {
-//         throw new ApiError(404, "Invalid email or password");
-//     }
+    // Check if the email is verified
+    if (!is_email_verified) {
+        return sendResponse(res, "error", null, "Email is not verified", 400);
+    }
 
-//     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-//     if (!isPasswordCorrect) {
-//         throw new ApiError(401, "Invalid email or password");
-//     }
+    // Find the user by email and include the password field
+    const user = await User.findOne({ email });
+    console.log(user)
+    // If user does not exist, return an error
+    if (!user) {
+        return sendResponse(res, "error", null, "Invalid email or password", 404);
+    }
 
-//     const token = generateAccessAndRefereshTokens({
-//         _id: user._id,
-//         email: user.email,
-//     });
+    // Check if the password is correct
 
-//     res.cookie("token", token, {
-//         httpOnly: true,
-//         secure: process.env.NODE_ENV === "production",
-//         sameSite: "strict",
-//     });
+    // If password is incorrect, return an error
+    if (!password) {
+        return sendResponse(res, "error", null, "Invalid email or password", 401);
+    }
 
-//     const userWithoutSensitiveData = {
-//         _id: user._id,
-//         collegeName: user.collegeName,
-//         email: user.email,
-//         role: user.role,
-//         avatar: user.avatar,
-//         username: user.username,
-//         token,
-//     };
+    // Generate access and refresh tokens
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
 
-//     return res.status(200).json(
-//         new ApiResponse(200, userWithoutSensitiveData, "Login Successful")
-//     );
-// });
+    // Set the refresh token in the user document
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    // Remove sensitive fields from the user object
+    const userWithoutSensitiveData = {
+        _id: user._id,
+        collegeName: user.collegeName,
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar,
+        telephone: user.telephone,
+        is_email_verified: user.is_email_verified,
+        csv_file_path: user.csv_file_path,
+        accessToken,
+    };
+
+    // Set the access token in a cookie
+    // const options = {
+    //     httpOnly: true,
+    //     secure: process.env.NODE_ENV === "production",
+    //     sameSite: "strict",
+    // };
+
+    return sendResponse(res, "success", userWithoutSensitiveData, "Login successfully", 200)
+        // .status(200)
+        // .cookie("accessToken", accessToken, options)
+        // .cookie("refreshToken", refreshToken, options)
+        // .json(
+        //     new ApiResponse(
+        //         200,
+        //         {
+        //             user: userWithoutSensitiveData,
+        //             accessToken,
+        //             refreshToken,
+        //         },
+        //         "Login successful"
+        //     )
+        // );
+});
 
 export {
     registerUser,
-    // loginUser
+    loginUser
 };
