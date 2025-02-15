@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { Mail, Phone, MapPin, Building, Key } from 'lucide-react';
+import { Mail, Phone, MapPin, Building, Key, User } from 'lucide-react';
 
 const RegistrationForm = () => {
+ 
+  const [otp, setOtp] = useState('');
+
   const [formData, setFormData] = useState({
     collegeName: '',
     email: '',
     username: '',
     telephone: '',
     address: '',
-    otp: ''
   });
 
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -78,7 +80,7 @@ const RegistrationForm = () => {
                   type="button"
                   onClick={handleVerifyClick}
                   disabled={!isEmailValid}
-                  className="bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] text-white"
+                  className="bg-gray-800 hover:bg-gray-900 text-white"
                 >
                   Verify
                 </Button>
@@ -93,8 +95,8 @@ const RegistrationForm = () => {
                     type="text"
                     name="otp"
                     placeholder="Enter OTP"
-                    value={formData.otp}
-                    onChange={handleInputChange}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
                     className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                     required
                   />
@@ -104,6 +106,7 @@ const RegistrationForm = () => {
 
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
+              <User className="w-5 h-5 text-[var(--primary-color)]" />
                 <Input
                   type="text"
                   name="username"
@@ -148,7 +151,7 @@ const RegistrationForm = () => {
 
             <Button 
               type="submit"
-              className="w-full bg-[var(--primary-color)] hover:bg-[var(--secondary-color)] text-white mt-6"
+              className="w-full bg-gray-800 hover:bg-gray-900 text-white mt-6"
             >
               Register
             </Button>
