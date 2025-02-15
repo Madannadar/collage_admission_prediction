@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
 import {DepartmentForm,FacultyDetails,RegistrationForm } from './Pages/index.js'
+import LoginForm from './Pages/LoginForm.jsx'
 import * as routes from './Routes/Routes.js'
 const router = createBrowserRouter([
   {
@@ -19,12 +20,16 @@ const router = createBrowserRouter([
         element: <RegistrationForm />,
       },
       {
-        path: '/FacultyDetails',
+        path: routes.FACULTY_DETAILS,
         element: <FacultyDetails />,
       },
       {
-        path: '/DepartmentForm',
+        path: routes.DEPARTMENT_FORM,
         element: <DepartmentForm />,
+      },
+      {
+        path: routes.LOGIN_FORM,
+        element: <LoginForm/>,
       },
     ]
   }
