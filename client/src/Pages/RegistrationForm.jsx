@@ -3,10 +3,37 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Mail, Phone, MapPin, Building, Key, User } from 'lucide-react';
+import { Navigate } from "react-router-dom";
 
 const RegistrationForm = () => {
  
   const [otp, setOtp] = useState('');
+  const navigate = Navigate();
+
+  const sendOtpToEmail = async (email, otp) => {
+    try {
+      setShowOtpInput(true);
+      console.log(email,otp);
+      
+        const response = await axios.post('http://localhost:8001/send-otp', { email, otp });
+        console.log(response.data); // Handle success response
+    } catch (error) {
+        console.error("Error:", error.message || error); // Log the actual error message
+    }
+  };
+
+  const verifyOtp = async (otp) => {
+    const enteredOtp = otp;
+    const storedOtp = localStorage.getItem("otp");
+
+    if (enteredOtp === storedOtp) {
+
+      localStorage.removeItem("otp");
+      navigate("/dashboard"); 
+    } else {
+      setError("Incorrect OTP. Please try again.");
+    }
+   };
 
   const [formData, setFormData] = useState({
     collegeName: '',
@@ -26,10 +53,7 @@ const RegistrationForm = () => {
     }));
   };
 
-  const handleVerifyClick = () => {
-    // Here you would typically implement OTP sending logic
-    setShowOtpInput(true);
-  };
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -78,7 +102,7 @@ const RegistrationForm = () => {
                 />
                 <Button
                   type="button"
-                  onClick={handleVerifyClick}
+                  onClick={()=> sendOtpToEmail(formData.email, otp)}
                   disabled={!isEmailValid}
                   className="bg-gray-800 hover:bg-gray-900 text-white"
                 >
@@ -100,6 +124,13 @@ const RegistrationForm = () => {
                     className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                     required
                   />
+                  <Button
+                  type="button"
+                  onClick={()=> verifyOtp(otp)}
+                  className="bg-gray-800 hover:bg-gray-900 text-white"
+                >
+                  Verify
+                </Button>
                 </div>
               </div>
             )}
