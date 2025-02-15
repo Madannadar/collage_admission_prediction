@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import axios from "axios";
 import {
   InputOTP,
   InputOTPGroup,
@@ -9,19 +10,25 @@ import {
 }from '../components/ui/input-otp';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Mail, Phone, MapPin, Building, Key, User } from 'lucide-react';
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
  
   const [otp, setOtp] = useState('');
-  const navigate = Navigate();
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000);  // Generates a 6-digit OTP
+};
 
   const sendOtpToEmail = async (email, otp) => {
     try {
+      localStorage.setItem("otp", otp);
       setShowOtpInput(true);
       console.log(email,otp);
       
-        const response = await axios.post('http://localhost:8001/send-otp', { email, otp });
+        const response = await axios.post('http://localhost:8001/api/v1/otp/send-otp', { email, otp });
         console.log(response.data); // Handle success response
     } catch (error) {
         console.error("Error:", error.message || error); // Log the actual error message
@@ -33,9 +40,10 @@ const RegistrationForm = () => {
     const storedOtp = localStorage.getItem("otp");
 
     if (enteredOtp === storedOtp) {
-
+      console.log("OTP verified successfully!");
+      
       localStorage.removeItem("otp");
-      navigate("/dashboard"); 
+      // navigate("/dashboard"); 
     } else {
       setError("Incorrect OTP. Please try again.");
     }
@@ -109,7 +117,7 @@ const RegistrationForm = () => {
                 />
                 <Button
                                     type="button"
-                                    onClick={handleVerifyClick}
+                                    onClick={()=> sendOtpToEmail(formData.email, generateOTP())}
                                     disabled={!isEmailValid}
                                     className="bg-gray-800 hover:bg-gray-900 text-white"
                                   >
@@ -119,25 +127,26 @@ const RegistrationForm = () => {
                </div>
                 
                 <div className="flex items-center space-x-2">
-                     <InputOTP maxLength={6} className="flex-1">
-                       <InputOTPGroup>
-                         <InputOTPSlot index={0} />
-                         <InputOTPSlot index={1} />
-                         <InputOTPSlot index={2} />
-                       </InputOTPGroup>
-                       <InputOTPSeparator />
-                       <InputOTPGroup>
-                         <InputOTPSlot index={3} />
-                         <InputOTPSlot index={4} />
-                         <InputOTPSlot index={5} />
-                       </InputOTPGroup>
-                     </InputOTP>
-               
-                               
+                <Input
+                  type="otp"
+                  name="otp"
+                  placeholder="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
+                  required
+                  
+                />                 
                              </div>
                           
 
-
+                           <Button
+                  type="button"
+                  onClick={()=> verifyOtp(otp)}
+                  className="bg-gray-800 hover:bg-gray-900 text-white"
+                >
+                  Verify
+                </Button>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
               <User className="w-5 h-5 text-[var(--primary-color)]" />

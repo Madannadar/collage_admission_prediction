@@ -23,4 +23,4 @@ const sendOtpEmail = (req, res) => {
     });
 };
 
-module.exports = { sendOtpEmail };
+export default sendOtpEmail ;
