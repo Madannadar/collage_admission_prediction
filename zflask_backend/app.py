@@ -6,7 +6,6 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from flask import Blueprint, request, jsonify
-import joblib  # Load ML model
 import numpy as np
 
 app = Flask(__name__)

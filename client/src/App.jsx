@@ -1,9 +1,29 @@
 import React from "react";
-import DepartmentForm from "./Pages/DepartmentForm"; // Adjust the import path as needed
-import RegistrationForm from "./Pages/RegistrationForm";
-import Login from "./Pages/LoginForm"
-import Timetable from "./Pages/Timetable";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
+import { cn } from "./lib/utils"; // Assuming you have this utility from shadcn
+import * as routes from './Routes/Routes.js'
+
+
+// Import icons (using Lucide React)
+import { 
+  Home, 
+  UserPlus, 
+  Calendar, 
+  Users, 
+  Building2, 
+  LogIn,
+  Menu,
+  X
+} from "lucide-react";
+
+const SIDEBAR_ITEMS = [
+  { icon: Home, label: "Dashboard", path: routes.LANDING_PAGE },
+  { icon: UserPlus, label: "Registration", path: routes.REGISTRATION },
+  { icon: Calendar, label: "Timetable", path: routes.TIME_TABLE },
+  { icon: Users, label: "Faculty Details", path: routes.FACULTY_DETAILS },
+  { icon: Building2, label: "Department", path: routes.DEPARTMENT_FORM },
+  { icon: LogIn, label: "Login", path: "/login" },
+];
 
 const App = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
