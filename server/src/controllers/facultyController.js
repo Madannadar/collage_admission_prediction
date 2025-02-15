@@ -1,4 +1,5 @@
 import { Facalty } from "../models/FacultyModal.js";
+import { Subject } from "../models/SubjectModel.js"; // Import the Subject model
 import { asyncHandler } from "../utils/asyncHandler.js";
 import sendResponse from "../utils/apiResonse.js";
 
@@ -12,13 +13,22 @@ const saveFacalty = asyncHandler(async (req, res) => {
     try {
         const savedFaculties = await Promise.all(
             faculties.map(async (faculty) => {
-                const { facultyName, departmentId, subjectIds } = faculty;
+                const { facultyName, subjectNames } = faculty;
 
-                // Check if faculty already exists
+                // Find subject IDs based on subject names
+                const subjectIds = await Promise.all(
+                    subjectNames.map(async (subjectName) => {
+                        const subject = await Subject.findOne({ SubjectName: subjectName });
+                        if (!subject) {
+                            throw new Error(`Subject not found: ${subjectName}`);
+                        }
+                        return subject._id;
+                    })
+                );
+
                 const existingFaculty = await Facalty.findOne({ facultyName });
 
                 if (existingFaculty) {
-                    // Update existing faculty
                     existingFaculty.subjectIds = subjectIds;
                     await existingFaculty.save();
                     return existingFaculty;
@@ -26,7 +36,6 @@ const saveFacalty = asyncHandler(async (req, res) => {
                     // Create new faculty
                     const newFaculty = await Facalty.create({
                         facultyName,
-                        departmentId,
                         subjectIds,
                     });
                     return newFaculty;
@@ -36,30 +45,20 @@ const saveFacalty = asyncHandler(async (req, res) => {
 
         return sendResponse(res, "success", savedFaculties, "Faculties saved/updated successfully", 200);
     } catch (error) {
-        return sendResponse(res, "error", null, "Error saving/updating faculties", 500);
-    }
-});
-
-const getFacultyLabels = asyncHandler(async (req, res) => {
-    try {
-        const facultyLabels = await Facalty.find({}, { facultyName: 1 });
-
-        return sendResponse(res, "success", facultyLabels, "Faculty labels retrieved successfully", 200);
-    } catch (error) {
-        return sendResponse(res, "error", null, "Error retrieving faculty labels", 500);
+        return sendResponse(res, "error", null, error.message, 500);
     }
 });
 
 const getFaculties = asyncHandler(async (req, res) => {
     try {
-        // Fetch faculties and populate the departmentId and subjectIds
-        const faculties = await Facalty.find().populate("departmentId").populate("subjectIds");
+        // Fetch faculties and populate the subjectIds to get subject names
+        const faculties = await Facalty.find().populate("subjectIds", "SubjectName -_id");
 
-        // Transform the data to include SubjectName in an array form
+        // Transform the data to include subject names in an array form
         const transformedFaculties = faculties.map(faculty => {
             return {
-                ...faculty._doc, // Spread the existing faculty document
-                SubjectName: faculty.SubjectName ? [faculty.SubjectName] : [] // Ensure SubjectName is an array
+                facultyName: faculty.facultyName,
+                subjectNames: faculty.subjectIds.map(subject => subject.SubjectName)
             };
         });
 
@@ -73,5 +72,4 @@ const getFaculties = asyncHandler(async (req, res) => {
 export {
     saveFacalty,
     getFaculties,
-    getFacultyLabels
 };

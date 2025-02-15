@@ -1,8 +1,7 @@
 // models/News.js
 import mongoose, { Schema } from "mongoose";
-import { type } from "os";
 
-const facultySchema = new Schema({
+const subjectSchema = new Schema({
     SubjectName: {
         type: String,
         required: true,
@@ -23,4 +22,4 @@ const facultySchema = new Schema({
     },
 });
 
-export const Facalty = mongoose.model('Facalty', facultySchema);
+export const Subject = mongoose.model('Subject', subjectSchema);

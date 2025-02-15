@@ -29,6 +29,15 @@ const ML = () => {
     { value: 'Electrical', label: 'Electrical' },
     { value: 'Architecture', label: 'Architecture' },
     { value: 'Pharma', label: 'Pharma' },
+    { value: 'CS', label: 'CS' },
+    { value: 'ECE', label: 'ECE' },
+    { value: 'ME', label: 'ME' },
+    { value: 'MBA', label: 'MBA' },
+    { value: 'Civil', label: 'Civil' },
+    { value: 'BioTech', label: 'BioTech' },
+    { value: 'Electrical', label: 'Electrical' },
+    { value: 'Architecture', label: 'Architecture' },
+    { value: 'Pharma', label: 'Pharma' },
   ];
 
   const handleInputChange = (e) => {
