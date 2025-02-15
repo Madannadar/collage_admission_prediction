@@ -25,9 +25,9 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { collegeName, email, username, password, telephone, is_email_verified } =
+    const { collegeName, email, username, telephone, is_email_verified } =
         req.body;
-
+    console.log('e',is_email_verified)
     if (!is_email_verified) {
         return sendResponse(
             res,
@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     if (
-        [collegeName, email, username, password].some((field) => !field?.trim())
+        [collegeName, email, username].some((field) => !field?.trim())
     ) {
         return sendResponse(res, "error", null, "All fields are required", 400);
     }
@@ -94,14 +94,14 @@ const registerUser = asyncHandler(async (req, res) => {
         collegeName,
         avatar: avatar.url,
         email,
-        password: password,
         username: username.toLowerCase(),
         csv_file_path: csv.url,
         telephone: telephone || null,
+        is_email_verified
     });
 
     const createdUser = await User.findById(user._id).select(
-        "-password -refreshToken"
+        "-refreshToken"
     );
 
     if (!createdUser) {
@@ -124,10 +124,10 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password, is_email_verified } = req.body;
+    const { email, is_email_verified } = req.body;
 
     // Check if email and password are provided
-    if (!email || !password) {
+    if (!email ) {
         return sendResponse(res, "error", null, "Email and password are required", 400);
     }
 
@@ -147,9 +147,9 @@ const loginUser = asyncHandler(async (req, res) => {
     // Check if the password is correct
 
     // If password is incorrect, return an error
-    if (!password) {
-        return sendResponse(res, "error", null, "Invalid email or password", 401);
-    }
+    // if (!password) {
+    //     return sendResponse(res, "error", null, "Invalid email or password", 401);
+    // }
 
     // Generate access and refresh tokens
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);

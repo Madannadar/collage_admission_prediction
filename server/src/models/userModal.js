@@ -37,10 +37,10 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
-        password: {
-            type: String,
-            required: [true, 'Password is required']
-        },
+        // password: {
+        //     type: String,
+        //     required: [true, 'Password is required']
+        // },
         telephone : {
             type: String,
             required : false,
