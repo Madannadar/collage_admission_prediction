@@ -4,6 +4,8 @@ import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
 import RegistrationForm from './Pages/RegistrationForm.jsx';
+import FacultyDetails from './Pages/FacultyDetails.jsx';
+import DepartmentForm from './Pages/DepartmentForm.jsx';
 
 const router = createBrowserRouter([
   {
@@ -18,10 +20,14 @@ const router = createBrowserRouter([
         path: '/register',
         element: <RegistrationForm />,
       },
-      // {
-      //   path: '/chatbot',
-      //   element: <ChatBot />,
-      // },
+      {
+        path: '/FacultyDetails',
+        element: <FacultyDetails />,
+      },
+      {
+        path: '/DepartmentForm',
+        element: <DepartmentForm />,
+      },
     ]
   }
 ])
