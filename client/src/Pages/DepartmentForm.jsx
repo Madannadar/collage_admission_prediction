@@ -42,7 +42,7 @@ const DepartmentForm = ({ onRemove }) => {
     <div className="bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg p-6 mb-6 relative w-full max-w-2xl">
       <h1 className="text-2xl font-bold mb-6 text-[var(--accent-color)]">Department Details</h1>
       <form className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Department Name</label>
             <input
@@ -129,14 +129,14 @@ const DepartmentForm = ({ onRemove }) => {
                     onClick={() => removeSubject(`year${year}`, index)}
                     className="text-red-500 hover:text-red-700"
                   >
-                    ❌
+                    ✖
                   </button>
                 </div>
               ))}
               <button
                 type="button"
                 onClick={() => addSubject(`year${year}`)}
-                className="text-[var(--accent-color)] hover:text-[var(--secondary-color)]"
+                className="text-[var(--primary-color)] hover:text-[var(--primary-color)]"
               >
                 + Add Subject
               </button>
