@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const DepartmentForm = ({ onRemove }{ onRemove }) => {
+const DepartmentForm = ({ onRemove }) => {
   const [departmentName, setDepartmentName] = useState("");
   const [noOfStudents, setNoOfStudents] = useState("");
   const [hodName, setHodName] = useState("");
@@ -39,11 +39,10 @@ const DepartmentForm = ({ onRemove }{ onRemove }) => {
   };
 
   return (
-    <div className="bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg p-6 mb-6 relative w-full max-w-2xl w-full max-w-2xl">
+    <div className="bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg p-6 mb-6 relative w-full max-w-2xl">
       <h1 className="text-2xl font-bold mb-6 text-[var(--accent-color)]">Department Details</h1>
       <form className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          {/* Department Name */}
           <div>
             <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Department Name</label>
             <input
@@ -69,29 +68,6 @@ const DepartmentForm = ({ onRemove }{ onRemove }) => {
 
         <div>
             <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Hod Name</label>
-            <input
-              type="text"
-              value={hodName}
-              onChange={(e) => setHodName(e.target.value)}
-              className="w-full px-4 py-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
-              required
-            />
-          </div>
-          {/* Number of Students */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Number of Students</label>
-            <input
-              type="number"
-              value={noOfStudents}
-              onChange={(e) => setNoOfStudents(e.target.value)}
-              className="w-full px-4 py-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
-              required
-            />
-          </div>
-
-          {/* HOD Name */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-color)] mb-1">HOD Name</label>
             <input
               type="text"
               value={hodName}
@@ -132,43 +108,6 @@ const DepartmentForm = ({ onRemove }{ onRemove }) => {
             />
           </div>
           </div>
-          {/* Number of Faculties */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Number of Faculties</label>
-            <input
-              type="number"
-              value={noOfFaculties}
-              onChange={(e) => setNoOfFaculties(e.target.value)}
-              className="w-full px-4 py-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
-              required
-            />
-          </div>
-
-          {/* Number of Classrooms */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Number of Classrooms</label>
-            <input
-              type="number"
-              value={noOfClassrooms}
-              onChange={(e) => setNoOfClassrooms(e.target.value)}
-              className="w-full px-4 py-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
-              required
-            />
-          </div>
-
-          {/* Number of Rooms */}
-          <div>
-            <label className="block text-sm font-medium text-[var(--text-color)] mb-1">Number of Rooms</label>
-            <input
-              type="number"
-              value={noOfRooms}
-              onChange={(e) => setNoOfRooms(e.target.value)}
-              className="w-full px-4 py-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
-              required
-            />
-          </div>
-        </div>
-
         {/* Year-wise Subjects */}
         <div>
           <label className="block text-sm font-medium text-[var(--text-color)]">Year-wise Subjects</label>
@@ -205,12 +144,6 @@ const DepartmentForm = ({ onRemove }{ onRemove }) => {
           ))}
         </div>
       </form>
-      <button
-        onClick={onRemove}
-        className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300"
-      >
-        Remove Card
-      </button>
       <button
         onClick={onRemove}
         className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300"
