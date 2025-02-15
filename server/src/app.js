@@ -22,7 +22,7 @@ import subjectRoute from './routes/subjectRoute.js'
 
 app.use("/api/v1/user",userRoute)
 app.use('/api/v1/otp', otpRoute)
-app.use('/api/v1/facutly', facultyRoute)
+app.use('/api/v1/faculty', facultyRoute)
 app.use('/api/v1/department', departmentRoute)
 app.use('/api/v1/subjects', subjectRoute)
 
