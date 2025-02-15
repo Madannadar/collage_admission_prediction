@@ -5,4 +5,4 @@ import LoginForm from './LoginForm';
 import Dashboard from "./DashBoard";
 import Timetable from "./Timetable";
 
-export {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm};
+export {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm,Dashboard,Timetable};
