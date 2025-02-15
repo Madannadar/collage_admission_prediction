@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
-import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm,Timetable,Dashboard} from './Pages/index.js'
+import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm,Timetable,Dashboard,ML} from './Pages/index.js'
 import * as routes from './Routes/Routes.js'
 const router = createBrowserRouter([
   {
@@ -33,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: routes.LOGIN_FORM,
         element: <LoginForm/>,
+      },
+      {
+        path: routes.AI_PREDICTION,
+        element: <ML/>,
       },
     ]
   }

@@ -13,7 +13,8 @@ import {
   Building2, 
   LogIn,
   Menu,
-  X
+  X,
+  TrendingUpDown
 } from "lucide-react";
 
 const SIDEBAR_ITEMS = [
@@ -22,7 +23,8 @@ const SIDEBAR_ITEMS = [
   { icon: Calendar, label: "Timetable", path: routes.TIME_TABLE },
   { icon: Users, label: "Faculty Details", path: routes.FACULTY_DETAILS },
   { icon: Building2, label: "Department", path: routes.DEPARTMENT_FORM },
-  { icon: LogIn, label: "Login", path: "/login" },
+  { icon: LogIn, label: "Login", path: routes.LOGIN_FORM },
+  { icon: TrendingUpDown, label: "AI Admission Prediction", path: routes.AI_PREDICTION },
 ];
 
 const App = () => {

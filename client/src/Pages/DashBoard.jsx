@@ -133,9 +133,16 @@ const Dashboard = () => {
     setCorrelationData(correlationData);
   };
 
+  const Loader = () => (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <p className="ml-4 text-black">Loading...</p>
+    </div>
+  );
+
   const average = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-  if (loading) return <div className="p-4">Loading...</div>;
+  if (loading) return <Loader />;;
   if (error) return <div className="p-4">Error: {error}</div>;
 
   return (
