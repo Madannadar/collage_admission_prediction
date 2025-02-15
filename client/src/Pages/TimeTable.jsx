@@ -11,22 +11,24 @@ const Timetable = () => {
     const lectures = parseInt(lecturesPerDay, 10);
     const hours = parseInt(workingHours, 10);
 
-    if (isNaN(lectures) ){
+    if (isNaN(lectures) || lectures <= 0) {
       alert('Please enter a valid number of lectures per day.');
       return;
     }
 
-    if (isNaN(hours)) {
+    if (isNaN(hours) || hours <= 0) {
       alert('Please enter a valid number of working hours.');
       return;
     }
 
     const timetableData = [];
     for (let i = 0; i < lectures; i++) {
+      const startTime = Math.floor(i * (hours / lectures));
+      const endTime = Math.floor((i + 1) * (hours / lectures));
       timetableData.push({
         lecture: i + 1,
-        startTime: `${i * (hours / lectures)}:00`,
-        endTime: `${(i + 1) * (hours / lectures)}:00`,
+        startTime: `${startTime}:00`,
+        endTime: `${endTime}:00`,
       });
     }
 
@@ -34,39 +36,34 @@ const Timetable = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-color)] p-4">
-      {/* Inputs and Generate Button in a Row */}
-      <div className="flex items-center justify-center space-x-4 mb-8">
+    <div className="min-h-screen bg-black text-white p-4">
+      {/* Inputs and Button in a Single Row */}
+      <div className="flex items-center gap-4">
         <Input
           type="number"
-          placeholder="Number of Lectures per Day"
+          placeholder="Lectures per Day"
           value={lecturesPerDay}
           onChange={(e) => setLecturesPerDay(e.target.value)}
-          className="w-48 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
-          required
+          className="w-40 p-2 border border-gray-400 text-black"
         />
         <Input
           type="number"
           placeholder="Total Working Hours"
           value={workingHours}
           onChange={(e) => setWorkingHours(e.target.value)}
-          className="w-48 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
-          required
+          className="w-40 p-2 border border-gray-400 text-black"
         />
-        <Button
-          onClick={handleGenerate}
-          className="bg-gray-800 hover:bg-gray-900 text-white"
-        >
+        <Button onClick={handleGenerate} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
           Generate Timetable
         </Button>
       </div>
 
-      {/* Timetable Table */}
+      {/* Timetable Table Below */}
       {timetable.length > 0 && (
-        <div className="flex justify-center">
-          <table className="border-collapse border border-gray-300">
+        <div className="mt-4">
+          <table className="w-full border-collapse border border-gray-500 text-white">
             <thead>
-              <tr className="bg-[var(--primary-color)] text-[var(--text-color)]">
+              <tr className="bg-gray-700 text-white">
                 <th className="p-2 border">Lecture</th>
                 <th className="p-2 border">Start Time</th>
                 <th className="p-2 border">End Time</th>
@@ -74,10 +71,10 @@ const Timetable = () => {
             </thead>
             <tbody>
               {timetable.map((lecture, index) => (
-                <tr key={index} className="border">
-                  <td className="p-2 border text-center">{lecture.lecture}</td>
-                  <td className="p-2 border text-center">{lecture.startTime}</td>
-                  <td className="p-2 border text-center">{lecture.endTime}</td>
+                <tr key={index} className="border text-center">
+                  <td className="p-2 border">{lecture.lecture}</td>
+                  <td className="p-2 border">{lecture.startTime}</td>
+                  <td className="p-2 border">{lecture.endTime}</td>
                 </tr>
               ))}
             </tbody>
