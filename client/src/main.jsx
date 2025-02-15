@@ -3,17 +3,17 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
-import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm } from './Pages/index.js'
+import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm,Dashboard} from './Pages/index.js'
 import * as routes from './Routes/Routes.js'
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      // {
-      //   path: '/',
-      //   element: <LandingPage />,
-      // },
+      {
+        path: routes.LANDING_PAGE,
+        element: <Dashboard />,
+      },
       {    
         path: routes.REGISTRATION,
         element: <RegistrationForm />,
