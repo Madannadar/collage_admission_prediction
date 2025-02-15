@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
@@ -20,15 +19,15 @@ const ML = () => {
   const [loading, setLoading] = useState(false); // For loading state
 
   const programOptions = [
-    { value: 'CS', label: 'CS' },
-    { value: 'ECE', label: 'ECE' },
-    { value: 'ME', label: 'ME' },
-    { value: 'MBA', label: 'MBA' },
-    { value: 'Civil', label: 'Civil' },
-    { value: 'BioTech', label: 'BioTech' },
-    { value: 'Electrical', label: 'Electrical' },
-    { value: 'Architecture', label: 'Architecture' },
-    { value: 'Pharma', label: 'Pharma' },
+    'CS',
+    'ECE',
+    'ME',
+    'MBA',
+    'Civil',
+    'BioTech',
+    'Electrical',
+    'Architecture',
+    'Pharma',
   ];
 
   const handleInputChange = (e) => {
@@ -39,10 +38,11 @@ const ML = () => {
     }));
   };
 
-  const handleProgramChange = (selectedOptions) => {
+  const handleProgramChange = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
     setFormData((prev) => ({
       ...prev,
-      programs: selectedOptions.map((option) => option.value),
+      programs: selectedOptions,
     }));
   };
 

@@ -223,6 +223,7 @@ const RegistrationForm = () => {
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <User className="w-5 h-5 text-[var(--primary-color)]" />
+                <User className="w-5 h-5 text-[var(--primary-color)]" />
                 <Input
                   type="text"
                   name="username"
@@ -263,6 +264,20 @@ const RegistrationForm = () => {
                   required
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <FileText className="w-5 h-5 text-[var(--primary-color)]" />
+                <label className="block text-sm font-medium">CSV File</label>
+              </div>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={(e) => setCsvFile(e.target.files[0])}
+                className="w-full py-2"
+                required
+              />
             </div>
 
             <Button 
