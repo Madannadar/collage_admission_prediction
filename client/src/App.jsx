@@ -1,14 +1,13 @@
-import React from 'react'
-import { Button } from './components/ui/button'
-import './index.css'
+import React from "react";
+import DepartmentForm from "./Pages/DepartmentForm" // Adjust the import path as needed
+import RegistrationForm from "./components/ui/RegistrationForm";
 
-function App() {
+const App = () => {
   return (
-    <div>
-      <p className='bg-red-500'>Hello</p>
-      <Button>Hello</Button>
+    <div className="min-h-screen bg-[var(--bg-color)] p-6">
+      <RegistrationForm />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
