@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { Building, User, Book, Clock, Percent, Users, Briefcase} from 'lucide-react';
-import Select from "react-select";
+import { Building, User, Book, Clock, Percent, Users, Briefcase } from 'lucide-react';
+import Select from 'react-select';
 
 const ML = () => {
   const [formData, setFormData] = useState({
@@ -16,8 +16,8 @@ const ML = () => {
     programs: [],
   });
 
-  const [messages, setMessages] = useState([]); // To store chat messages
-  const [loading, setLoading] = useState(false); // For loading state
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const programOptions = [
     { value: 'CS', label: 'CS' },
@@ -39,14 +39,6 @@ const ML = () => {
     }));
   };
 
-  const handleProgramChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
-    setFormData((prev) => ({
-      ...prev,
-      programs: selectedOptions,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -54,15 +46,59 @@ const ML = () => {
     // Add user's input to messages
     setMessages((prev) => [
       ...prev,
-      { type: 'user', text: `Year: ${formData.year}, Applications: ${formData.totalApplications}, GPA: ${formData.averageGPA}, Marketing Spend: ${formData.marketingSpend}, Placement Rate: ${formData.placementRate}, Intake: ${formData.totalIntake}, Programs: ${formData.programs.join(', ')}` },
+      { 
+        type: 'user', 
+        text: `Year: ${formData.year}, Applications: ${formData.totalApplications}, GPA: ${formData.averageGPA}, Marketing Spend: ${formData.marketingSpend}, Placement Rate: ${formData.placementRate}, Intake: ${formData.totalIntake}, Programs: ${formData.programs.join(', ')}` 
+      },
     ]);
 
-    // Simulate API call for prediction
-    setTimeout(() => {
-      const prediction = `Predicted Placement Rate: ${Math.floor(Math.random() * 100)}%`; // Replace with actual API response
-      setMessages((prev) => [...prev, { type: 'bot', text: prediction }]);
+    try {
+      // Prepare data for backend
+      const requestData = {
+        param1: parseInt(formData.year),
+        param2: parseInt(formData.totalApplications),
+        param3: parseFloat(formData.averageGPA),
+        param4: parseInt(formData.marketingSpend),
+        param5: parseFloat(formData.placementRate),
+        param6: formData.programs[0], // Taking first selected program
+        param7: parseInt(formData.totalIntake)
+      };
+
+      // Make API call to backend
+      const response = await fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Prediction failed');
+      }
+
+      const data = await response.json();
+      
+      // Add prediction to messages
+      setMessages((prev) => [
+        ...prev, 
+        { 
+          type: 'bot', 
+          text: `Predicted Admission Rate: ${data.prediction[0].toFixed(0)}` 
+        }
+      ]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages((prev) => [
+        ...prev,
+        { 
+          type: 'bot', 
+          text: 'Sorry, there was an error making the prediction. Please try again.' 
+        }
+      ]);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
 
     // Reset form
     setFormData({
@@ -89,7 +125,7 @@ const ML = () => {
 
       {/* Chat Container */}
       <div className="w-full flex-1 flex flex-col bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="p-4 bg-white border-t">
+        <div className="p-4 bg-white border-t">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Year */}
@@ -181,16 +217,19 @@ const ML = () => {
                 />
               </div>
 
-              {/* Program Selection (Multi-Select Dropdown) */}
+              {/* Program Selection */}
               <div className="flex items-center space-x-2 col-span-2">
                 <User className="w-5 h-5 text-[var(--primary-color)]" />
                 <Select
                   isMulti
                   options={programOptions}
-                  value={programOptions.filter((option) =>
-                    formData.programs.includes(option.value)
-                  )}
-                  onChange={handleProgramChange}
+                  value={programOptions.filter((option) => formData.programs.includes(option.value))}
+                  onChange={(selectedOptions) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      programs: selectedOptions.map((option) => option.value),
+                    }))
+                  }
                   className="flex-1 text-black"
                 />
               </div>
@@ -206,20 +245,17 @@ const ML = () => {
             </Button>
           </form>
         </div>
+
         {/* Chat Messages */}
         <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`flex ${
-                message.type === 'user' ? 'justify-end' : 'justify-start'
-              } mb-4`}
+              className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
             >
               <div
                 className={`max-w-[70%] p-3 rounded-lg ${
-                  message.type === 'user'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 text-black'
+                  message.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'
                 }`}
               >
                 {message.text}
@@ -234,9 +270,6 @@ const ML = () => {
             </div>
           )}
         </div>
-
-        {/* Input Form */}
-        
       </div>
     </div>
   );

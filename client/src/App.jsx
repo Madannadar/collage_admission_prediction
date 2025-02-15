@@ -1,8 +1,7 @@
-import React from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "./lib/utils"; // Assuming you have this utility from shadcn
-import * as routes from './Routes/Routes.js'
-
+import * as routes from './Routes/Routes.js';
 
 // Import icons (using Lucide React)
 import { 
@@ -14,7 +13,8 @@ import {
   LogIn,
   Menu,
   X,
-  TrendingUpDown
+  TrendingUpDown,
+  LogOut 
 } from "lucide-react";
 
 const SIDEBAR_ITEMS = [
@@ -25,18 +25,41 @@ const SIDEBAR_ITEMS = [
   { icon: Building2, label: "Department", path: routes.DEPARTMENT_FORM },
   { icon: LogIn, label: "Login", path: routes.LOGIN_FORM },
   { icon: TrendingUpDown, label: "AI Admission Prediction", path: routes.AI_PREDICTION },
+  { icon: LogOut , label: "Logout" },
 ];
 
 const App = () => {
-  const [sidebarOpen, setSidebarOpen] = React.useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [user, setUser] = useState(null);
   const location = useLocation();
-  
+  const navigate = useNavigate();
+
+  // Check if user is in localStorage on component mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else if (location.pathname === '/') {
+      navigate(routes.LOGIN_FORM);
+    }
+  }, [navigate, location.pathname]);
+
+  // Handle logout
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (confirmLogout) {
+      localStorage.removeItem('user');
+      setUser(null);
+      navigate(routes.LOGIN_FORM);
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <div 
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0",
+          "fixed inset-y-0 left-0 z-10 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -52,22 +75,44 @@ const App = () => {
         </div>
         
         {/* Navigation Items */}
-        <nav className="p-4 space-y-2">
-          {SIDEBAR_ITEMS.map((item) => (
-            <Link 
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center space-x-3 p-3 rounded-lg transition-colors",
-                location.pathname === item.path
-                  ? "bg-blue-100 text-blue-800"
-                  : "text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              <item.icon size={20} />
-              <span>{item.label}</span>
-            </Link>
-          ))}
+        <nav className="p-4 space-y-2 z-0">
+          {SIDEBAR_ITEMS.map((item) => {
+            // Hide Login and Registration buttons if user is present
+            if ((item.label === "Login" || item.label === "Registration") && user) {
+              return null;
+            }
+            // Handle Logout button click
+            if (item.label === "Logout") {
+              return (
+                <button
+                  key={item.label}
+                  onClick={handleLogout}
+                  className={cn(
+                    "flex items-center space-x-3 p-3 rounded-lg transition-colors w-full text-left",
+                    "text-gray-700 bg-white hover:bg-gray-100"
+                  )}
+                >
+                  <item.icon size={20} />
+                  <span>{item.label}</span>
+                </button>
+              );
+            }
+            return (
+              <Link 
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex items-center space-x-3 p-3 rounded-lg transition-colors",
+                  location.pathname === item.path
+                    ? "bg-blue-100 text-blue-800"
+                    : "text-gray-700 hover:bg-gray-100"
+                )}
+              >
+                <item.icon size={20} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
       

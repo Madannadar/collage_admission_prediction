@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import axios from "axios";
 import {
@@ -11,12 +11,16 @@ import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Mail, Phone, MapPin, Building, Key, User, Fingerprint, Check, Loader2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Alert, AlertDescription } from "../components/ui/alert";
+import { loginService } from '../zServices/authServices';
+import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast'; // Import toast and Toaster
 
 const LoginForm = () => {
   const [otp, setOtp] = useState('');
+  const [is_email_verified, set_is_email_verified] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
+    is_email_verified: is_email_verified,
   });
 
   const [error, setError] = useState('');
@@ -25,6 +29,9 @@ const LoginForm = () => {
   const [otpSending, setOtpSending] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,11 +62,11 @@ const LoginForm = () => {
       if (response.data) {
         setShowOtpInput(true);
         setOtpSent(true);
-        setSuccessMessage("OTP sent successfully! Please check your email.");
+        toast.success("OTP sent successfully! Please check your email.");
       }
     } catch (error) {
       console.error("Error:", error.message || error);
-      setError("Failed to send OTP. Please try again.");
+      toast.error("Failed to send OTP. Please try again.");
     } finally {
       setOtpSending(false);
     }
@@ -73,36 +80,62 @@ const LoginForm = () => {
 
     if (otp === storedOtp) {
       setOtpVerified(true);
-      setSuccessMessage("OTP verified successfully!");
+      set_is_email_verified(true);
+      toast.success("OTP verified successfully!");
       localStorage.removeItem("otp");
     } else {
-      setError("Incorrect OTP. Please try again.");
+      toast.error("Incorrect OTP. Please try again.");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!otpVerified) {
-      setError("Please verify your email with OTP before logging in.");
+      toast.error("Please verify your email with OTP before logging in.");
       return;
     }
 
-    try {
-      // Add your login API call here
-      console.log('Form submitted:', formData);
+    setIsLoggingIn(true);
+    setError('');
+    setSuccessMessage('');
 
-      // Navigate to dashboard or next page after successful login
-      // navigate("/dashboard");
+    try {
+      const payload = {
+        email: formData.email,
+        is_email_verified: is_email_verified,
+      };
+      console.log('yy',payload)
+      const response = await loginService(payload);
+
+      if (response.data) {
+        localStorage.setItem("user", JSON.stringify(response.data)); // Store user data in localStorage
+        toast.success("Login successful! Redirecting...");
+        setTimeout(() => {
+          navigate('/'); // Navigate to the home route
+        }, 2000); // Delay navigation to show success message
+      }
     } catch (error) {
-      setError("Login failed. Please try again.");
+      console.error("Login error:", error.message || error);
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
   const isEmailValid = formData.email.includes('@') && formData.email.includes('.');
 
+  // Check if user is already logged in (user data exists in localStorage)
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      navigate('/'); // Redirect to home if user is already logged in
+    }
+  }, [navigate]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-color)] p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50 p-4">
+      <Toaster /> {/* Add Toaster component to render toasts */}
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-[var(--primary-color)]">
@@ -146,7 +179,7 @@ const LoginForm = () => {
                       ? "bg-green-600 hover:bg-green-700"
                       : otpVerified
                       ? "bg-green-700 hover:bg-green-800"
-                      : "bg-gray-800 hover:bg-gray-900"
+                      : "bg-[#253985] hover:bg-[hsl(228,56%,40%)]"
                   } text-white`}
                 >
                   {otpSending ? (
@@ -177,7 +210,7 @@ const LoginForm = () => {
                     onClick={verifyOtp}
                     disabled={otp.length !== 6 || otpVerified}
                     className={`
-                      ${otpVerified ? "bg-green-700 hover:bg-green-800" : "bg-gray-800 hover:bg-gray-900"}
+                      ${otpVerified ? "bg-green-700 hover:bg-green-800" : "bg-[#253985] hover:bg-[hsl(228,56%,40%)]"}
                       text-white
                     `}
                   >
@@ -196,26 +229,31 @@ const LoginForm = () => {
 
             <Button
               type="submit"
-              disabled={!otpVerified}
+              disabled={!otpVerified || isLoggingIn}
               className={`w-full ${
                 otpVerified
-                  ? "bg-gray-800 hover:bg-gray-900"
-                  : "bg-gray-400 cursor-not-allowed"
+                  ? "bg-[#253985] hover:bg-[hsl(228,56%,40%)]"
+                  : "bg-[#33458b] cursor-not-allowed"
               } text-white mt-6`}
             >
-              Login
+              {isLoggingIn ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
           <div className="text-center mt-4">
-  <p
-  onClick={() => navigate('/register')} 
-   className="text-sm text-gray-600">
-    Don't have an account?{' '}
-    <a href="/register" className="text-[var(--primary-color)] hover:underline">
-      Sign up
-    </a>
-  </p>
-</div>
+            <p
+              onClick={() => navigate('/register')}
+              className="text-sm text-gray-600 cursor-pointer"
+            >
+              Don't have an account?{' '}
+              <a href="/register" className="text-[var(--primary-color)] hover:underline">
+                Sign up
+              </a>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
