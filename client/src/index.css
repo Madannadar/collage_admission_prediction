@@ -117,3 +117,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+:root {
+  --primary-color: #0d0d0d; /* Deep Black */
+  --secondary-color: #e5e5e5; /* Neon Purple */
+  --accent-color: #00ffff; /* Neon Cyan */
+  --text-color: #e5e5e5; /* Light Gray */
+  --bg-color: #000000; /* Pure Black */
+}
+
+body {
+  @apply bg-[var(--bg-color)] text-[var(--text-color)] font-sans;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply text-[var(--accent-color)] font-bold;
+}
+
+button {
+  @apply px-4 py-2 bg-[var(--secondary-color)] text-black rounded-lg 
+         hover:bg-[var(--accent-color)] transition duration-300;
+}
