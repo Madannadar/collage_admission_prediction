@@ -1,18 +1,11 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import DepartmentForm from "./Pages/DepartmentForm";
-import FacultyDetails from "./Pages/FacultyDetails";
-import Head from "./Pages/Head";
+import DepartmentForm from "./Pages/DepartmentForm" // Adjust the import path as needed
+import RegistrationForm from "./Pages/RegistrationForm";
+import { Outlet } from "react-router-dom";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-[var(--bg-color)] p-6">
-      {/* <Routes>
-        <Route path="/" element={<Head/>} />
-        <Route path="/DepartmentForm" element={<DepartmentForm />} />
-        <Route path="/FacultyDetails" element={<FacultyDetails />} />
-      </Routes> */}
-    </div>
+   <Outlet />
   );
 };
 
