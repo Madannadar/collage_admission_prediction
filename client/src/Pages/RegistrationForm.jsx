@@ -11,6 +11,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Mail, Phone, MapPin, Building, Key, User } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
+import { registerServices } from '../zServices/authServices.js';
 
 const RegistrationForm = () => {
  
