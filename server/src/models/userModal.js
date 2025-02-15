@@ -25,10 +25,10 @@ const userSchema = new Schema(
             trim: true, 
             index: true
         },
-        avatar: {
-            type: String,
-            required: true,
-        },
+        // avatar: {
+        //     type: String,
+        //     required: true,
+        // },
         is_email_verified : {
             type: Boolean,
             required:true,

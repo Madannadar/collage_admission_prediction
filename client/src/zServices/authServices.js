@@ -8,7 +8,7 @@ const registerServices = async (payload) => {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-            withCredentials: true,
+            withCredentials: false, // Changed from true to false
         });
         return response;
     } catch (error) {
