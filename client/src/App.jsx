@@ -39,10 +39,10 @@ const App = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-    } else {
+    } else if (location.pathname === '/') {
       navigate(routes.LOGIN_FORM);
     }
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   // Handle logout
   const handleLogout = () => {
