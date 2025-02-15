@@ -29,6 +29,10 @@ const userSchema = new Schema(
             type: String,
             required: true,
         },
+        is_email_verified : {
+            type: Boolean,
+            default : false,
+        },
         csv_file_path: {
             type: String,
             required: true,
@@ -37,9 +41,14 @@ const userSchema = new Schema(
             type: String,
             required: [true, 'Password is required']
         },
+        telephone : {
+            type: String,
+            required : false,
+        },
         refreshToken: {
             type: String
         },
+
         // role: {
         //     type: String,
         //     enum: ['student', 'teacher'],
