@@ -3,6 +3,7 @@ import DepartmentForm from "./Pages/DepartmentForm"; // Adjust the import path a
 import RegistrationForm from "./Pages/RegistrationForm";
 import Login from "./Pages/LoginForm"
 import Timetable from "./Pages/Timetable";
+import ML from "./Pages/ML"
 import { Outlet } from "react-router-dom";
 
 const App = () => {

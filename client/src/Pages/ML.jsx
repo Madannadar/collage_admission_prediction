@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
@@ -17,15 +16,15 @@ const ML = () => {
   });
 
   const programOptions = [
-    { value: 'CS', label: 'CS' },
-    { value: 'ECE', label: 'ECE' },
-    { value: 'ME', label: 'ME' },
-    { value: 'MBA', label: 'MBA' },
-    { value: 'Civil', label: 'Civil' },
-    { value: 'BioTech', label: 'BioTech' },
-    { value: 'Electrical', label: 'Electrical' },
-    { value: 'Architecture', label: 'Architecture' },
-    { value: 'Pharma', label: 'Pharma' },
+    'CS',
+    'ECE',
+    'ME',
+    'MBA',
+    'Civil',
+    'BioTech',
+    'Electrical',
+    'Architecture',
+    'Pharma',
   ];
 
   const handleInputChange = (e) => {
@@ -36,10 +35,11 @@ const ML = () => {
     }));
   };
 
-  const handleProgramChange = (selectedOptions) => {
+  const handleProgramChange = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, (option) => option.value);
     setFormData((prev) => ({
       ...prev,
-      programs: selectedOptions.map((option) => option.value),
+      programs: selectedOptions,
     }));
   };
 
@@ -151,13 +151,20 @@ const ML = () => {
             {/* Program Selection (Multi-Select Dropdown) */}
             <div className="flex items-center space-x-2">
               <User className="w-5 h-5 text-[var(--primary-color)]" />
-              <Select
-                isMulti
-                options={programOptions}
-                value={programOptions.filter((option) => formData.programs.includes(option.value))}
+              <select
+                name="programs"
+                multiple
+                value={formData.programs}
                 onChange={handleProgramChange}
-                className="flex-1 text-black"
-              />
+                className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] rounded-md p-2"
+                required
+              >
+                {programOptions.map((program) => (
+                  <option key={program} value={program}>
+                    {program}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Submit Button */}
