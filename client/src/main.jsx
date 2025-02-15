@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
-import {DepartmentForm,FacultyDetails,} from './Pages/index.js'
+import {DepartmentForm,FacultyDetails,RegistrationForm } from './Pages/index.js'
 import * as routes from './Routes/Routes.js'
 const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
       //   path: '/',
       //   element: <LandingPage />,
       // },
-      {
+      {    
         path: routes.REGISTRATION,
         element: <RegistrationForm />,
       },
