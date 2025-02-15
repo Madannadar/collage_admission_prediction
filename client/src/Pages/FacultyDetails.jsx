@@ -3,20 +3,7 @@ import React, { useState } from 'react';
 const FacultyDetails = () => {
     const [teacherName, setTeacherName] = useState('');
     const [subject, setSubject] = useState('');
-    // const data =[
-    //     {
-    //         teacherName: "John Doe",
-    //         subject: "Math"
-    //     },
-    //     {
-    //         teacherName: "Jane Doe",
-    //         subject: "Science"
-    //     },
-    //     {
-    //         teacherName: "James Doe",
-    //         subject: "English"
-    //     },
-    // ]
+
     const handleSubmit = (e) => {
         e.preventDefault(); // Prevents page reload
         console.log("Teacher Name:", teacherName);
@@ -25,33 +12,34 @@ const FacultyDetails = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4 bg-gray-900 text-white rounded-lg">
-            <div className="flex items-center gap-2 bg-gray-800 p-2 rounded-md">
-                {/* <img src="search.svg" alt="search" className="w-5 h-5" /> */}
-                <input
-                    type="text"
-                    placeholder="Enter Teacher's Name"
-                    value={teacherName}
-                    onChange={(e) => setTeacherName(e.target.value)}
-                    className="bg-transparent outline-none w-full p-2"
-                />
-            </div>
-            
-            <div className="flex items-center gap-2 bg-gray-800 p-2 rounded-md">
-                {/* <img src="search.svg" alt="search" className="w-5 h-5" /> */}
-                <input
-                    type="text"
-                    placeholder="Enter Teacher's Subject"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="bg-transparent outline-none w-full p-2"
-                />
-            </div>
+        <div className="flex justify-center items-center min-h-screen">
+            <form onSubmit={handleSubmit} className="w-full max-w-md bg-[var(--bg-color)] border border-[var(--secondary-color)] rounded-lg p-6 flex flex-col gap-4 text-[var(--text-color)]">
+                <h1 className="text-2xl font-bold text-[var(--accent-color)] text-center">Faculty Details</h1>
+                <div className="flex items-center gap-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] p-2 rounded-lg">
+                    <input
+                        type="text"
+                        placeholder="Enter Teacher's Name"
+                        value={teacherName}
+                        onChange={(e) => setTeacherName(e.target.value)}
+                        className="w-full px-4 py-2 bg-transparent text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
+                    />
+                </div>
+                
+                <div className="flex items-center gap-2 bg-[var(--bg-color)] border border-[var(--secondary-color)] p-2 rounded-lg">
+                    <input
+                        type="text"
+                        placeholder="Enter Teacher's Subject"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        className="w-full px-4 py-2 bg-transparent text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)]"
+                    />
+                </div>
 
-            <button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition">
-                Submit
-            </button>
-        </form>
+                <button type="submit" className="bg-[var(--secondary-color)] hover:bg-[var(--accent-color)] text-black font-bold py-2 px-4 rounded-lg transition duration-300">
+                    Submit
+                </button>
+            </form>
+        </div>
     );
 };
 
