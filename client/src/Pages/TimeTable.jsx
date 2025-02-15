@@ -44,14 +44,14 @@ const Timetable = () => {
           placeholder="Lectures per Day"
           value={lecturesPerDay}
           onChange={(e) => setLecturesPerDay(e.target.value)}
-          className="w-40 p-2 border border-gray-400 text-black"
+          className="w-40 p-2 border border-gray-400 text-white"
         />
         <Input
           type="number"
           placeholder="Total Working Hours"
           value={workingHours}
           onChange={(e) => setWorkingHours(e.target.value)}
-          className="w-40 p-2 border border-gray-400 text-black"
+          className="w-40 p-2 border border-gray-400 text-white"
         />
         <Button onClick={handleGenerate} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
           Generate Timetable
