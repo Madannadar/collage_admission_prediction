@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+}from '../components/ui/input-otp';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Mail, Phone, MapPin, Building, Key, User } from 'lucide-react';
@@ -61,6 +67,23 @@ const RegistrationForm = () => {
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
                 />
+                </div>
+                
+                <div className="flex items-center space-x-2">
+      <InputOTP maxLength={6} className="flex-1">
+        <InputOTPGroup>
+          <InputOTPSlot index={0} />
+          <InputOTPSlot index={1} />
+          <InputOTPSlot index={2} />
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup>
+          <InputOTPSlot index={3} />
+          <InputOTPSlot index={4} />
+          <InputOTPSlot index={5} />
+        </InputOTPGroup>
+      </InputOTP>
+
                 <Button
                   type="button"
                   onClick={handleVerifyClick}
@@ -72,30 +95,15 @@ const RegistrationForm = () => {
               </div>
             </div>
 
-            {showOtpInput && (
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Key className="w-5 h-5 text-[var(--primary-color)]" />
-                  <Input
-                    type="text"
-                    name="otp"
-                    placeholder="Enter OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
-                    required
-                  />
-                </div>
-              </div>
-            )}
+            
 
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Phone className="w-5 h-5 text-[var(--primary-color)]" />
                 <Input
                   type="tel"
-                  name="telephone"
-                  placeholder="Telephone"
+                  name="password"
+                  placeholder="Password"
                   value={formData.telephone}
                   onChange={handleInputChange}
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
