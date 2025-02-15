@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
+import axios from "axios";
 import {
   InputOTP,
   InputOTPGroup,
@@ -21,6 +22,7 @@ const RegistrationForm = () => {
    
   });
 
+     const [error, setError] = useState('');
   const [showOtpInput, setShowOtpInput] = useState(false);
 
   const handleInputChange = (e) => {
@@ -31,10 +33,38 @@ const RegistrationForm = () => {
     }));
   };
 
-  const handleVerifyClick = () => {
-    // Here you would typically implement OTP sending logic
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000);  // Generates a 6-digit OTP
+};
+
+  const sendOtpToEmail = async (email, otp) => {
     setShowOtpInput(true);
+    try {
+      localStorage.setItem("otp", otp);
+      setShowOtpInput(true);
+      console.log(email,otp);
+      
+        const response = await axios.post('http://localhost:8001/api/v1/otp/send-otp', { email, otp });
+        console.log(response.data); // Handle success response
+    } catch (error) {
+        console.error("Error:", error.message || error); // Log the actual error message
+    }
   };
+
+  const verifyOtp = async (otp) => {
+    const enteredOtp = otp;
+    const storedOtp = localStorage.getItem("otp");
+
+    if (enteredOtp === storedOtp) {
+      console.log("OTP verified successfully!");
+      
+      localStorage.removeItem("otp");
+      // navigate("/dashboard"); 
+    } else {
+      setError("Incorrect OTP. Please try again.");
+    }
+   };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,31 +97,34 @@ const RegistrationForm = () => {
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
                 />
+                 <Button
+                                  type="button"
+                                  onClick={()=> sendOtpToEmail(formData.email, generateOTP())}
+                                  className="bg-gray-800 hover:bg-gray-900 text-white"
+                                >
+                                  send otp
+                                </Button>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-      <InputOTP maxLength={6} className="flex-1">
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-        </InputOTPGroup>
-        <InputOTPSeparator />
-        <InputOTPGroup>
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
-        </InputOTPGroup>
-      </InputOTP>
+     <Input
+                       type="otp"
+                       name="otp"
+                       placeholder="otp"
+                       value={otp}
+                       onChange={(e) => setOtp(e.target.value)}
+                       className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
+                       required
+                       
+                     /> 
 
-                <Button
-                  type="button"
-                  onClick={handleVerifyClick}
-                  disabled={!isEmailValid}
-                  className="bg-gray-800 hover:bg-gray-900 text-white"
-                >
-                  Verify
-                </Button>
+                  <Button
+                                  type="button"
+                                  onClick={()=> verifyOtp(otp)}
+                                  className="bg-gray-800 hover:bg-gray-900 text-white"
+                                >
+                                  Verify
+                                </Button>
               </div>
             </div>
 
