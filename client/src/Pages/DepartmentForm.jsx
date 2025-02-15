@@ -44,6 +44,7 @@ const DepartmentForm = () => {
       <form className="space-y-4">
         {/* Department Name */}
         <div>
+          
           <label className="block text-sm font-medium text-[var(--text-color)]">Department Name</label>
           <input
             type="text"
