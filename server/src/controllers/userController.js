@@ -1,70 +1,104 @@
-import {ApiError} from "../utils/ApiError.js"
-import { User} from "../models/user.model.js"
-import {uploadOnCloudinary,deleteOnCloudinary} from "../utils/cloudinary.js"
-import { ApiResponse } from "../utils/ApiResponse.js";
-import jwt from "jsonwebtoken"
-import mongoose from "mongoose";
-import bcrypt from 'bcrypt'
-import sendResponse from '../utils/apiResonse.js'
+import { ApiError } from "../utils/ApiError.js";
+import { User } from "../models/userModal.js";
+import { uploadOnCloudinary, deleteOnCloudinary } from "../utils/cloudinary.js";
+// import jwt from "jsonwebtoken";
+// import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import sendResponse from "../utils/apiResonse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-const generateAccessAndRefereshTokens = async(userId) =>{
+const generateAccessAndRefereshTokens = async (userId) => {
     try {
-        const user = await User.findById(userId)
-        const accessToken = user.generateAccessToken()
-        const refreshToken = user.generateRefreshToken()
+        const user = await User.findById(userId);
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
 
-        user.refreshToken = refreshToken
-        await user.save({ validateBeforeSave: false })
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
 
-        return {accessToken, refreshToken}
-
+        return { accessToken, refreshToken };
     } catch (error) {
-        throw new ApiError(500, "Something went wrong while generating referesh and access token")
+        throw new ApiError(
+            500,
+            "Something went wrong while generating referesh and access token"
+        );
     }
-}
+};
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { collegeName, email, username, password, telephone } = req.body;
+    const { collegeName, email, username, password, telephone, is_verified } =
+        req.body;
 
-    if ([collegeName, email, username, password].some((field) => field?.trim() === "")) {
-        throw new ApiError(400, "All fields are required");
+    if (!is_verified) {
+        return sendResponse(
+            res,
+            "error",
+            null,
+            "Please verify your email",
+            400
+        );
     }
 
-    // if (!email.endsWith('@gst.sies.edu.in')) {
-    //     throw new ApiError(400, "Please enter a valid college email ID");
-    // }
+    if (
+        [collegeName, email, username, password].some((field) => !field?.trim())
+    ) {
+        return sendResponse(res, "error", null, "All fields are required", 400);
+    }
 
-    const existedUser = await User.findOne({
-        $or: [{ username }, { email }]
-    });
+    // Check if user already exists
+    const existedUser = await User.findOne({ $or: [{ username }, { email }] });
+
     if (existedUser) {
-        throw new ApiError(409, "User with email or username already exists");
+        return sendResponse(
+            res,
+            "error",
+            null,
+            "User with email or username already exists",
+            409
+        );
     }
 
-    // Check for avatar file
-    const avatarLocalPath = req.files?.avatar[0]?.path;
+    // Check and Upload Avatar
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
     if (!avatarLocalPath) {
-        throw new ApiError(400, "Avatar file is required");
+        return sendResponse(res, "error", null, "Avatar file is required", 400);
     }
 
-    // Upload avatar to Cloudinary
     const avatar = await uploadOnCloudinary(avatarLocalPath);
     if (!avatar) {
-        throw new ApiError(400, "Avatar file is required");
+        return sendResponse(
+            res,
+            "error",
+            null,
+            "Avatar file upload failed",
+            400
+        );
     }
 
-    // Identify if the user is a teacher or student based on email
-    // const isStudent = /\d/.test(email);
-    // const role = isStudent ? "student" : "teacher";
+    // Check and Upload CSV
+    const csvFileLocalPath = req.files?.csv_file?.[0]?.path;
+    if (!csvFileLocalPath) {
+        return sendResponse(res, "error", null, "CSV file is required", 400);
+    }
+
+    const csv = await uploadOnCloudinary(csvFileLocalPath);
+    if (!csv) {
+        return sendResponse(res, "error", null, "CSV file upload failed", 400);
+    }
+
+    // Hash Password before saving
+    const bcrypt = await import("bcryptjs");
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the user
     const user = await User.create({
         collegeName,
         avatar: avatar.url,
-        email, 
-        password,
+        email,
+        password: hashedPassword,
         username: username.toLowerCase(),
-        // role,
+        csv_file_path: csv.url,
+        telephone: telephone || null,
     });
 
     const createdUser = await User.findById(user._id).select(
@@ -72,59 +106,68 @@ const registerUser = asyncHandler(async (req, res) => {
     );
 
     if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while registering the user");
+        return sendResponse(
+            res,
+            "error",
+            null,
+            "Something went wrong while registering the user",
+            500
+        );
     }
 
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered Successfully")
+    return sendResponse(
+        res,
+        "success",
+        createdUser,
+        "User registered successfully",
+        201
     );
 });
 
-const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+// const loginUser = asyncHandler(async (req, res) => {
+//     const { email, password } = req.body;
 
-    if (!email || !password) {
-        throw new ApiError(400, "Email and password are required");
-    }
+//     if (!email || !password) {
+//         throw new ApiError(400, "Email and password are required");
+//     }
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user) {
-        throw new ApiError(404, "Invalid email or password");
-    }
+//     const user = await User.findOne({ email }).select("+password");
+//     if (!user) {
+//         throw new ApiError(404, "Invalid email or password");
+//     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
-        throw new ApiError(401, "Invalid email or password");
-    }
+//     const isPasswordCorrect = await bcrypt.compare(password, user.password);
+//     if (!isPasswordCorrect) {
+//         throw new ApiError(401, "Invalid email or password");
+//     }
 
-    const token = generateAccessAndRefereshTokens({
-        _id: user._id,
-        email: user.email,
-    });
+//     const token = generateAccessAndRefereshTokens({
+//         _id: user._id,
+//         email: user.email,
+//     });
 
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-    });
+//     res.cookie("token", token, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production",
+//         sameSite: "strict",
+//     });
 
-    const userWithoutSensitiveData = {
-        _id: user._id,
-        collegeName: user.collegeName,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        username: user.username,
-        token,
-    };
+//     const userWithoutSensitiveData = {
+//         _id: user._id,
+//         collegeName: user.collegeName,
+//         email: user.email,
+//         role: user.role,
+//         avatar: user.avatar,
+//         username: user.username,
+//         token,
+//     };
 
-    return res.status(200).json(
-        new ApiResponse(200, userWithoutSensitiveData, "Login Successful")
-    );
-});
+//     return res.status(200).json(
+//         new ApiResponse(200, userWithoutSensitiveData, "Login Successful")
+//     );
+// });
 
-
-export { 
+export {
     registerUser,
-    loginUser
-    };
+    // loginUser
+};

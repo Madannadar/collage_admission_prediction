@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+}from '../components/ui/input-otp';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { Mail, Phone, MapPin, Building, Key, User } from 'lucide-react';
 import { Navigate } from "react-router-dom";
@@ -99,41 +105,38 @@ const RegistrationForm = () => {
                   onChange={handleInputChange}
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
+                  
                 />
                 <Button
-                  type="button"
-                  onClick={()=> sendOtpToEmail(formData.email, otp)}
-                  disabled={!isEmailValid}
-                  className="bg-gray-800 hover:bg-gray-900 text-white"
-                >
-                  Verify
-                </Button>
-              </div>
-            </div>
-
-            {showOtpInput && (
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Key className="w-5 h-5 text-[var(--primary-color)]" />
-                  <Input
-                    type="text"
-                    name="otp"
-                    placeholder="Enter OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
-                    required
-                  />
-                  <Button
-                  type="button"
-                  onClick={()=> verifyOtp(otp)}
-                  className="bg-gray-800 hover:bg-gray-900 text-white"
-                >
-                  Verify
-                </Button>
+                                    type="button"
+                                    onClick={handleVerifyClick}
+                                    disabled={!isEmailValid}
+                                    className="bg-gray-800 hover:bg-gray-900 text-white"
+                                  >
+                                    Verify
+                                  </Button>
                 </div>
-              </div>
-            )}
+               </div>
+                
+                <div className="flex items-center space-x-2">
+                     <InputOTP maxLength={6} className="flex-1">
+                       <InputOTPGroup>
+                         <InputOTPSlot index={0} />
+                         <InputOTPSlot index={1} />
+                         <InputOTPSlot index={2} />
+                       </InputOTPGroup>
+                       <InputOTPSeparator />
+                       <InputOTPGroup>
+                         <InputOTPSlot index={3} />
+                         <InputOTPSlot index={4} />
+                         <InputOTPSlot index={5} />
+                       </InputOTPGroup>
+                     </InputOTP>
+               
+                               
+                             </div>
+                          
+
 
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
