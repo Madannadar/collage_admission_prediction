@@ -3,9 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
-import {DepartmentForm,FacultyDetails,RegistrationForm } from './Pages/index.js'
-import LoginForm from './Pages/LoginForm.jsx'
-import RegistrationForm from "./Pages/RegistrationForm.jsx"
+import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm } from './Pages/index.js'
 import * as routes from './Routes/Routes.js'
 const router = createBrowserRouter([
   {
