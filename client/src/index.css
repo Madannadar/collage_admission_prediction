@@ -121,9 +121,9 @@
 :root {
   --primary-color: #0d0d0d; /* Deep Black */
   --secondary-color: #e5e5e5; /* Neon Purple */
-  --accent-color: #00ffff; /* Neon Cyan */
+  --accent-color: hsl(228,56%,40%); /* Neon Cyan */
   --text-color: #e5e5e5; /* Light Gray */
-  --bg-color: #dbeafe; /* Pure Black */
+  --bg-color: #292828; /* Pure Black */
 }
 
 body {

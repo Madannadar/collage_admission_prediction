@@ -157,7 +157,7 @@ const RegistrationForm = () => {
           if (response.data) {
               localStorage.setItem("user", JSON.stringify(response.data));
               toast.success("Registration successful!");
-              navigate("/");
+              navigate("/DepartmentForm");
           }
       } catch (error) {
           toast.error("Registration failed. Please try again.");
