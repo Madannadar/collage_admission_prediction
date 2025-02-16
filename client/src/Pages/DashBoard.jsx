@@ -253,9 +253,9 @@ const Dashboard = () => {
           <CardTitle className="text-xl text-black/50">Raw Data</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto overflow-y-auto" style={{ maxHeight: "500px" }}>
             <table className="min-w-full border-collapse table-auto">
-              <thead className="bg-blue-50">
+              <thead className="bg-blue-50 sticky top-0">
                 <tr>
                   {data.length > 0 && Object.keys(data[0]).map((key, idx) => (
                     <th key={idx} className="border px-4 py-2 text-black/50">{key}</th>
@@ -263,7 +263,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.slice(0, 10).map((row, idx) => (
+                {data.map((row, idx) => (
                   <tr key={idx} className="hover:bg-gray-50">
                     {Object.values(row).map((value, idx) => (
                       <td key={idx} className="border px-4 py-2">
