@@ -5,7 +5,14 @@ import { SubjectServices } from "../zServices/SubjectServices";
 import { DepartmentServices } from "../zServices/DepartmentServices";
 import { Button } from "../components/ui/button";
 
+
+
+
 const DepartmentForm = ({ onRemove }) => {
+
+    const userString = localStorage.getItem("user");
+    const user = userString ? JSON.parse(userString) : null;
+
     const [forms, setForms] = useState([
         {
             departmentName: "",
@@ -98,6 +105,7 @@ const DepartmentForm = ({ onRemove }) => {
                 noOfFaculties: "",
                 noOfClassrooms: "",
                 noOfRooms: "",
+                collegeId: user.data._id,
                 yearWiseSubjects: {
                     year1: [""],
                     year2: [""],
@@ -108,8 +116,7 @@ const DepartmentForm = ({ onRemove }) => {
         ]);
     };
 
-    const userString = localStorage.getItem("user");
-    const user = userString ? JSON.parse(userString) : null;
+   
     console.log("user", user);
 
     const handleSubmit = async (e) => {
@@ -131,13 +138,15 @@ const DepartmentForm = ({ onRemove }) => {
                 // Department payload
                 const departmentPayload = {
                     departmentName: form.departmentName,
-                    collegeId: user._id,
+                    collegeId: user.data._id,
                     noOfStudents: form.noOfStudents,
                     hodName: form.hodName,
                     noOfFaculties: form.noOfFaculties,
                     noOfClassrooms: form.noOfClassrooms,
                     noOfRooms: form.noOfRooms,
                 };
+                console.log("departmentPayload", departmentPayload);
+                
                 departmentPayloads.push(departmentPayload);
 
                 // Subjects payload

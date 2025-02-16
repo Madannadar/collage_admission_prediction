@@ -4,7 +4,7 @@ import sendResponse from "../utils/apiResonse.js";
 
 const saveDepartment = asyncHandler(async (req, res) => {
     const { departments } = req.body; // Expect an array of department objects
-
+    
     // Check if departments array is provided
     if (!departments || !Array.isArray(departments)) {
         return sendResponse(res, "error", null, "Departments array is required", 400);
@@ -15,7 +15,7 @@ const saveDepartment = asyncHandler(async (req, res) => {
 
     // Loop through each department in the array
     for (const dept of departments) {
-        const { departmentName, collegeId } = dept;
+        const { departmentName, collegeId, subjects } = dept;
 
         // Validate required fields
         if (!departmentName || !collegeId) {
@@ -30,11 +30,12 @@ const saveDepartment = asyncHandler(async (req, res) => {
             if (existingDepartment) {
                 // Update the existing department
                 existingDepartment.departmentName = departmentName; // Update fields if needed
+                existingDepartment.subjects = subjects || []; // Update subjects if provided
                 await existingDepartment.save();
                 results.push({ departmentName, collegeId, action: "updated", department: existingDepartment });
             } else {
                 // Create a new department
-                const newDepartment = await Department.create({ departmentName, collegeId });
+                const newDepartment = await Department.create({ departmentName, collegeId, subjects: subjects || [] });
                 results.push({ departmentName, collegeId, action: "created", department: newDepartment });
             }
         } catch (error) {
