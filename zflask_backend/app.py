@@ -22,15 +22,15 @@ def predict():
         param3 = data.get("param3")  # averageGPA
         param4 = data.get("param4")  # marketingSpend
         param5 = data.get("param5")  # placementRate
-        param6 = data.get("param6")  # program
+          # program
         param7 = data.get("param7")  # totalIntake
 
         # Validate input
-        if None in [param1, param2, param3, param4, param5, param6, param7]:
+        if None in [param1, param2, param3, param4, param5, param7]:
             return jsonify({"error": "Missing input parameters"}), 400
 
         # Load and prepare data
-        df = pd.read_csv(r'C:\Users\selvi\OneDrive\Documents\ei.csv')
+        df = pd.read_csv(r'error.csv')
 
         # Preprocess the data
         df['Placement Rate'] = df['Placement Rate'].str.replace('%', '').astype(float)
