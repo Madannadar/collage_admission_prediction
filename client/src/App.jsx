@@ -16,6 +16,7 @@ import {
   TrendingUpDown,
   LogOut 
 } from "lucide-react";
+import { BudgetAllocation } from "./Pages/index.js";
 
 const SIDEBAR_ITEMS = [
   { icon: Home, label: "Dashboard", path: routes.LANDING_PAGE },
@@ -26,6 +27,8 @@ const SIDEBAR_ITEMS = [
   { icon: LogIn, label: "Login", path: routes.LOGIN_FORM },
   { icon: TrendingUpDown, label: "AI Admission Prediction", path: routes.AI_PREDICTION },
   { icon: LogOut , label: "Logout" },
+  { icon: TrendingUpDown , label: "Budget Allocation" , path:routes.BUDGETALLOCATION },
+  
 ];
 
 const App = () => {
