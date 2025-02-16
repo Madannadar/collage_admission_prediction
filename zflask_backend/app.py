@@ -22,7 +22,6 @@ def predict():
         param3 = data.get("param3")  # averageGPA
         param4 = data.get("param4")  # marketingSpend
         param5 = data.get("param5")  # placementRate
-          # program
         param7 = data.get("param7")  # totalIntake
 
         # Validate input
