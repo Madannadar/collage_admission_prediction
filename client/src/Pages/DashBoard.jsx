@@ -12,7 +12,7 @@ import {
   CartesianGrid,
   Legend,
   ScatterChart,
-  Scatter
+  Scatter,
 } from "recharts";
 
 const Dashboard = () => {
@@ -26,13 +26,20 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "http://res.cloudinary.com/diwcd954n/raw/upload/v1739620742/e0zjdeb1evmodsxdhyjr.csv"
-        );
+        const userString = localStorage.getItem("user");
+        const user = userString ? JSON.parse(userString) : null;
+
+        // Check if user and user.data exist
+        const csvFilePath = user?.data?.csv_file_path;
+
+        // Use the fallback URL if csvFilePath is not available
+        let url = csvFilePath || "http://res.cloudinary.com/diwcd954n/raw/upload/v1739620742/e0zjdeb1evmodsxdhyjr.csv";
+
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch the data");
         }
-        
+
         const textData = await response.text();
         const parsedData = parseCSV(textData);
         setData(parsedData);
@@ -64,7 +71,7 @@ const Dashboard = () => {
     const yearlyData = rawData.reduce((acc, item) => {
       const year = item.Year;
       if (!year) return acc;
-      
+
       if (!acc[year]) {
         acc[year] = {
           applications: [],
@@ -73,22 +80,22 @@ const Dashboard = () => {
           placementRate: []
         };
       }
-      
+
       const applications = parseFloat(item["Total Applications"]);
       const cgpa = parseFloat(item["Average CGPA"]);
       const marketingSpend = parseFloat(item["Marketing Spend"]);
       let placementRate = item["Placement Rate"];
-      
+
       // Check if placement rate exists and has the replace method
-      placementRate = placementRate && typeof placementRate === 'string' 
-        ? parseFloat(placementRate.replace('%', '')) 
+      placementRate = placementRate && typeof placementRate === 'string'
+        ? parseFloat(placementRate.replace('%', ''))
         : 0;
-      
+
       if (!isNaN(applications)) acc[year].applications.push(applications);
       if (!isNaN(cgpa)) acc[year].cgpa.push(cgpa);
       if (!isNaN(marketingSpend)) acc[year].marketingSpend.push(marketingSpend);
       if (!isNaN(placementRate)) acc[year].placementRate.push(placementRate);
-      
+
       return acc;
     }, {});
 
@@ -105,10 +112,10 @@ const Dashboard = () => {
     // Process placement trends
     const placementData = rawData.map(item => {
       let placementRate = item["Placement Rate"];
-      placementRate = placementRate && typeof placementRate === 'string' 
-        ? parseFloat(placementRate.replace('%', '')) 
+      placementRate = placementRate && typeof placementRate === 'string'
+        ? parseFloat(placementRate.replace('%', ''))
         : 0;
-      
+
       return {
         year: item.Year || '',
         placementRate: !isNaN(placementRate) ? placementRate : 0,
@@ -120,10 +127,10 @@ const Dashboard = () => {
     // Process correlation data
     const correlationData = rawData.map(item => {
       let placementRate = item["Placement Rate"];
-      placementRate = placementRate && typeof placementRate === 'string' 
-        ? parseFloat(placementRate.replace('%', '')) 
+      placementRate = placementRate && typeof placementRate === 'string'
+        ? parseFloat(placementRate.replace('%', ''))
         : 0;
-      
+
       return {
         marketingSpend: !isNaN(parseFloat(item["Marketing Spend"])) ? parseFloat(item["Marketing Spend"]) : 0,
         placementRate: !isNaN(placementRate) ? placementRate : 0,
@@ -142,13 +149,13 @@ const Dashboard = () => {
 
   const average = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
-  if (loading) return <Loader />;;
+  if (loading) return <Loader />;
   if (error) return <div className="p-4">Error: {error}</div>;
 
   return (
     <div className="p-4 bg-blue-50 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-black">College Analytics Dashboard</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Yearly Trends Chart */}
         <Card className="shadow-lg bg-blue-50">
@@ -164,16 +171,16 @@ const Dashboard = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="avgPlacementRate" 
-                    stroke="#3B82F6" 
+                  <Line
+                    type="monotone"
+                    dataKey="avgPlacementRate"
+                    stroke="#3B82F6"
                     name="Placement Rate (%)"
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="avgCGPA" 
-                    stroke="#60A5FA" 
+                  <Line
+                    type="monotone"
+                    dataKey="avgCGPA"
+                    stroke="#60A5FA"
                     name="Average CGPA"
                   />
                 </LineChart>
@@ -192,19 +199,19 @@ const Dashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <ScatterChart>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="marketingSpend" 
+                  <XAxis
+                    dataKey="marketingSpend"
                     name="Marketing Spend"
                     type="number"
                   />
-                  <YAxis 
-                    dataKey="placementRate" 
+                  <YAxis
+                    dataKey="placementRate"
                     name="Placement Rate"
                     unit="%"
                   />
                   <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                  <Scatter 
-                    data={correlationData} 
+                  <Scatter
+                    data={correlationData}
                     fill="#60A5FA"
                     name="Marketing vs Placement"
                   />
@@ -228,9 +235,9 @@ const Dashboard = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar 
-                    dataKey="avgApplications" 
-                    fill="#60A5FA" 
+                  <Bar
+                    dataKey="avgApplications"
+                    fill="#60A5FA"
                     name="Average Applications"
                   />
                 </BarChart>

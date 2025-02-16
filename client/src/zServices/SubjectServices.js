@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const BASE_URL = `http://localhost:8001/api/v1/department`;
+const BASE_URL = `http://localhost:8001/api/v1/subjects`;
 
-const DepartmentServices = async (payload) => {
+const SubjectServices = async (payload) => {
     try {
         const response = await axios.post(`${BASE_URL}/save`, payload, {
             headers: {
@@ -17,5 +17,5 @@ const DepartmentServices = async (payload) => {
 };
 
 export {
-    DepartmentServices,
+    SubjectServices,
 }
