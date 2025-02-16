@@ -23,9 +23,9 @@ const FacultyDetails = () => {
     useEffect(() => {
         const fetchSubjects = async () => {
             try {
-                const payload = { departmentId: "67b17999ec24a3ef62aa90cd", Year: "2023" }; // Example payload
+                const payload = {}; // Example payload
                 const response = await getAllSubjects(payload);
-                setSubjects(response.data.map(subject => subject.SubjectName)); // Extract subject names
+                setSubjects(response.subjects); // Extract subject names
             } catch (error) {
                 console.error("Failed to fetch subjects:", error);
             }
