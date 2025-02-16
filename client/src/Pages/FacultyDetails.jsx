@@ -1,144 +1,209 @@
-import React, { useState } from 'react';
-import { facultyServices } from '../zServices/facultyServices';
+import React, { useState } from "react";
+import { facultyServices } from "../zServices/facultyServices";
+import {
+    Button,
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "../components/index.js";
+import { Navigate } from "react-router-dom";
 
 const FacultyDetails = () => {
-  const [cards, setCards] = useState([{ id: 1, facultyName: '', selectedSubjects: [] }]);
+    const [cards, setCards] = useState([
+        { id: 1, facultyName: "", subjectNames: [] },
+    ]);
 
-  const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'Computer Science'];
+    const subjects = [
+        "Mathematics",
+        "Physics",
+        "Chemistry",
+        "Biology",
+        "Computer Science",
+    ];
 
-  const addCard = () => {
-    const newCard = { id: Date.now(), facultyName: '', selectedSubjects: [] };
-    setCards([...cards, newCard]);
-  };
+    const addCard = () => {
+        const newCard = {
+            id: Date.now(),
+            facultyName: "",
+            subjectNames: [],
+        };
+        setCards([...cards, newCard]);
+    };
 
-  const removeCard = (id) => {
-    setCards(cards.filter((card) => card.id !== id));
-  };
+    const removeCard = (id) => {
+        setCards(cards.filter((card) => card.id !== id));
+    };
 
-  const updateCard = (id, field, value) => {
-    setCards(
-      cards.map((card) =>
-        card.id === id ? { ...card, [field]: value } : card
-      )
-    );
-  };
+    const updateCard = (id, field, value) => {
+        setCards(
+            cards.map((card) =>
+                card.id === id ? { ...card, [field]: value } : card
+            )
+        );
+    };
 
-  const toggleSubject = (id, subject) => {
-    setCards(
-      cards.map((card) => {
-        if (card.id === id) {
-          const isSelected = card.selectedSubjects.includes(subject);
-          const updatedSubjects = isSelected
-            ? card.selectedSubjects.filter((s) => s !== subject)
-            : [...card.selectedSubjects, subject];
-          return { ...card, selectedSubjects: updatedSubjects };
-        }
-        return card;
-      })
-    );
-  };
+    const toggleSubject = (id, subject) => {
+        setCards(
+            cards.map((card) => {
+                if (card.id === id) {
+                    const isSelected = card.subjectNames.includes(subject);
+                    const updatedSubjects = isSelected
+                        ? card.subjectNames.filter((s) => s !== subject)
+                        : [...card.subjectNames, subject];
+                    return { ...card, subjectNames: updatedSubjects };
+                }
+                return card;
+            })
+        );
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = cards.map(({ facultyName, selectedSubjects }) => ({
-      facultyName,
-      selectedSubjects,
-    }));
-    facultyServices(payload);
-    console.log('Payload to send:', payload);
-  };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const payload = cards.map(({ facultyName, subjectNames }) => ({
+            facultyName,
+            subjectNames,
+        }));
+        facultyServices(payload);
+        console.log("Payload to send:", payload);
+        Navigate('/')
+    };
 
-  const Dropdown = ({ cardId, selectedSubjects }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const Dropdown = ({ cardId, subjectNames }) => {
+        const [isOpen, setIsOpen] = useState(false);
+        const [searchTerm, setSearchTerm] = useState("");
+
+        const filteredSubjects = subjects.filter((subject) =>
+            subject.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        return (
+            <div className="relative w-full">
+                <button
+                    type="button"
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                    {subjectNames.length > 0
+                        ? subjectNames.join(", ")
+                        : "Select Subjects"}
+                </button>
+                {isOpen && (
+                    <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+                        <input
+                            type="text"
+                            placeholder="Search subjects..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full px-4 py-2 border-b border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        />
+                        <div className="max-h-48 overflow-y-auto">
+                            {filteredSubjects.map((subject) => (
+                                <label
+                                    key={subject}
+                                    className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                >
+                                    <input
+                                        type="checkbox"
+                                        className="mr-2"
+                                        checked={subjectNames.includes(subject)}
+                                        onChange={() =>
+                                            toggleSubject(cardId, subject)
+                                        }
+                                    />
+                                    {subject}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     return (
-      <div className="relative w-full">
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-gray-500"
-        >
-          {selectedSubjects.length > 0
-            ? selectedSubjects.join(', ')
-            : 'Select Subjects'}
-        </button>
-        {isOpen && (
-          <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10">
-            {subjects.map((subject) => (
-              <label
-                key={subject}
-                className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  checked={selectedSubjects.includes(subject)}
-                  onChange={() => toggleSubject(cardId, subject)}
-                />
-                {subject}
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="min-h-screen bg-black p-10 flex flex-col items-center justify-center gap-8"
-    >
-      <h1 className="text-2xl font-bold text-white text-center">Faculty Details</h1>
-      <div className="w-full max-w-4xl space-y-8 flex flex-col items-center">
-        {cards.map((card) => (
-          <div
-            key={card.id}
-            className="flex flex-col gap-6 w-full bg-white p-6 rounded-lg relative shadow-lg max-w-7xl"
-          >
-            <button
-              onClick={() => removeCard(card.id)}
-              className="absolute top-3 right-3 text-red-500 hover:text-red-700 text-xl w-6 h-6 flex items-center justify-center"
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-md z-50">
+            <form
+                onSubmit={handleSubmit}
+                className="w-full max-w-4xl bg-white p-10 rounded-lg shadow-2xl relative"
             >
-              ✖
-            </button>
-            <div className="flex gap-6 w-full text-black">
-              <div className="w-1/2">
-                <label className="font-semibold mb-2 block">Teacher Name:</label>
-                <input
-                  type="text"
-                  placeholder="Enter Teacher's Name"
-                  value={card.facultyName}
-                  onChange={(e) => updateCard(card.id, 'facultyName', e.target.value)}
-                  className="w-full px-3 py-2 bg-transparent border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-gray-500"
-                />
-              </div>
-              <div className="w-1/2">
-                <label className="font-semibold mb-2 block">Select Subjects:</label>
-                <Dropdown
-                  cardId={card.id}
-                  selectedSubjects={card.selectedSubjects}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <button
-        type="button"
-        onClick={addCard}
-        className="mt-6 px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition duration-300 text-lg font-semibold shadow-md"
-      >
-        + Add Teacher
-      </button>
-      <button
-        type="submit"
-        className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 text-lg font-semibold shadow-md"
-      >
-        Submit All
-      </button>
-    </form>
-  );
+                <h1 className="text-2xl font-bold text-center mb-6">
+                    Faculty Details
+                </h1>
+                <div className="space-y-6 overflow-y-auto max-h-[70vh]">
+                    {cards.map((card) => (
+                        <div
+                            key={card.id}
+                            className="flex flex-col gap-4 p-6 rounded-lg relative"
+                        >
+                            <div className="flex gap-4">
+                                <div className="w-1/2">
+                                    <label className="font-semibold text-black block">
+                                        Teacher Name:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Teacher's Name"
+                                        value={card.facultyName}
+                                        onChange={(e) =>
+                                            updateCard(
+                                                card.id,
+                                                "facultyName",
+                                                e.target.value
+                                            )
+                                        }
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500"
+                                    />
+                                </div>
+                                <div className="w-1/2">
+                                    <label className="font-semibold text-black block">
+                                        Select Subjects:
+                                    </label>
+                                    <Dropdown
+                                        cardId={card.id}
+                                        subjectNames={card.subjectNames}
+                                    />
+                                </div>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                onClick={() =>
+                                                    removeCard(card.id)
+                                                }
+                                                variant="outline"
+                                                className="bg-[#253985] text-white hover:bg-[hsl(228,56%,40%)] mt-8 top-3 right-3  text-xl"
+                                            >
+                                                X
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Remove Card</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex justify-center gap-4 mt-6">
+                    <button
+                        type="button"
+                        onClick={addCard}
+                        className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition duration-300"
+                    >
+                        + Add Teacher
+                    </button>
+                </div>
+                <button
+                    type="submit"
+                    className="fixed bottom-6 right-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                    Submit All
+                </button>
+            </form>
+        </div>
+    );
 };
 
 export default FacultyDetails;

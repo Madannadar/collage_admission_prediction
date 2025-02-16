@@ -1,88 +1,112 @@
-import React, { useState } from 'react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
+import React, { useState } from "react";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 
-const Timetable = () => {
-  const [lecturesPerDay, setLecturesPerDay] = useState('');
-  const [workingHours, setWorkingHours] = useState('');
-  const [timetable, setTimetable] = useState([]);
+const TimeTable = () => {
+  // State for input fields
+  const [lectures, setLectures] = useState("");
+  const [workingHours, setWorkingHours] = useState("");
 
-  const handleGenerate = () => {
-    const lectures = parseInt(lecturesPerDay, 10);
-    const hours = parseInt(workingHours, 10);
-
-    if (isNaN(lectures) || lectures <= 0) {
-      alert('Please enter a valid number of lectures per day.');
-      return;
-    }
-
-    if (isNaN(hours) || hours <= 0) {
-      alert('Please enter a valid number of working hours.');
-      return;
-    }
-
-    const timetableData = [];
-    for (let i = 0; i < lectures; i++) {
-      const startTime = Math.floor(i * (hours / lectures));
-      const endTime = Math.floor((i + 1) * (hours / lectures));
-      timetableData.push({
-        lecture: i + 1,
-        startTime: `${startTime}:00`,
-        endTime: `${endTime}:00`,
-      });
-    }
-
-    setTimetable(timetableData);
-  };
+  // Temporary hardcoded data
+  const tableData = [
+    {
+      day : "Monday",
+      subject: "Mathematics",
+      lectures: 5,
+      totalHours: 10,
+    },
+    {
+      day : "Tuesday",
+      subject: "Physics",
+      lectures: 4,
+      totalHours: 8,
+    },
+    {
+      day : "Wednesday",
+      subject: "Chemistry",
+      lectures: 3,
+      totalHours: 6,
+    },
+    {
+      day : "Thursday",
+      subject: "English",
+      lectures: 2,
+      totalHours: 4,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      {/* Inputs and Button in a Single Row */}
-      <div className="flex items-center gap-4">
-        <Input
-          type="number"
-          placeholder="Lectures per Day"
-          value={lecturesPerDay}
-          onChange={(e) => setLecturesPerDay(e.target.value)}
-          className="w-40 p-2 border border-gray-400 text-white"
-        />
-        <Input
-          type="number"
-          placeholder="Total Working Hours"
-          value={workingHours}
-          onChange={(e) => setWorkingHours(e.target.value)}
-          className="w-40 p-2 border border-gray-400 text-white"
-        />
-        <Button onClick={handleGenerate} className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2">
-          Generate Timetable
-        </Button>
-      </div>
-
-      {/* Timetable Table Below */}
-      {timetable.length > 0 && (
-        <div className="mt-4">
-          <table className="w-full border-collapse border border-gray-500 text-white">
-            <thead>
-              <tr className="bg-gray-700 text-white">
-                <th className="p-2 border">Lecture</th>
-                <th className="p-2 border">Start Time</th>
-                <th className="p-2 border">End Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {timetable.map((lecture, index) => (
-                <tr key={index} className="border text-center">
-                  <td className="p-2 border">{lecture.lecture}</td>
-                  <td className="p-2 border">{lecture.startTime}</td>
-                  <td className="p-2 border">{lecture.endTime}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-gray-700 p-6 rounded-lg shadow-lg max-w-7xl w-full">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Time Table
+        </h1>
+        {/* Input Fields */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label
+              htmlFor="lectures"
+              className="block text-sm font-medium text-white mb-1"
+            >
+              No. of Lectures
+            </label>
+            <input
+              type="number"
+              id="lectures"
+              value={lectures}
+              onChange={(e) => setLectures(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              placeholder="Enter lectures"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="workingHours"
+              className="block text-sm font-medium text-white mb-1"
+            >
+              Total Working Hours
+            </label>
+            <input
+              type="number"
+              id="workingHours"
+              value={workingHours}
+              onChange={(e) => setWorkingHours(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+              placeholder="Enter hours"
+            />
+          </div>
         </div>
-      )}
+
+        {/* Time Table */}
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Day</TableHead>
+              <TableHead>Subject</TableHead>
+              <TableHead>No. of Lectures</TableHead>
+              <TableHead>Total Working Hours</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tableData.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.day}</TableCell>
+                <TableCell>{row.subject}</TableCell>
+                <TableCell>{row.lectures}</TableCell>
+                <TableCell>{row.totalHours}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
 
-export default Timetable;
+export default TimeTable;
