@@ -13,7 +13,6 @@ const ML = () => {
     marketingSpend: '',
     placementRate: '',
     totalIntake: '',
-    programs: [],
   });
 
   const [messages, setMessages] = useState([]);
@@ -49,7 +48,7 @@ const ML = () => {
       ...prev,
       {
         type: 'user',
-        text: `Year: ${formData.year}, Applications: ${formData.totalApplications}, GPA: ${formData.averageGPA}, Marketing Spend: ${formData.marketingSpend}, Placement Rate: ${formData.placementRate}, Intake: ${formData.totalIntake}, Programs: ${formData.programs.join(', ')}`,
+        text: `Year: ${formData.year}, Applications: ${formData.totalApplications}, GPA: ${formData.averageGPA}, Marketing Spend: ${formData.marketingSpend}, Placement Rate: ${formData.placementRate}, Intake: ${formData.totalIntake}`,
       },
     ]);
 
@@ -61,8 +60,7 @@ const ML = () => {
         !formData.averageGPA ||
         !formData.marketingSpend ||
         !formData.placementRate ||
-        !formData.totalIntake ||
-        formData.programs.length === 0
+        formData.totalIntake === 0
       ) {
         throw new Error('All fields are required');
       }
@@ -74,8 +72,7 @@ const ML = () => {
         param3: parseFloat(formData.averageGPA),
         param4: parseInt(formData.marketingSpend),
         param5: parseFloat(formData.placementRate),
-        param6: formData.programs[0], // Taking first selected program
-        param7: parseInt(formData.totalIntake),
+        param6: parseInt(formData.totalIntake),
       };
 
       // Make API call to backend
@@ -94,12 +91,12 @@ const ML = () => {
       const data = await response.json();
 
       // Validate prediction response
-      if (data.prediction === undefined) {
+      if (!data.prediction || !data.program_predictions) {
         throw new Error('Invalid prediction response');
       }
 
-      // Add prediction to messages
-      const predictionMessage = `Predicted chances of Total intake increasing: ${parseFloat(data.prediction).toFixed(2)}%`;
+      // Add overall prediction to messages
+      const predictionMessage = `Overall predicted chances of Total intake increasing: ${parseFloat(data.prediction).toFixed(2)}%`;
 
       // Add context message based on the predicted percentage
       let contextMessage = '';
@@ -113,11 +110,16 @@ const ML = () => {
         contextMessage = 'The intake is likely to remain the same or increase slightly.';
       }
 
+      // Add program-wise predictions
+      const programPredictionsMessage = Object.entries(data.program_predictions)
+        .map(([program, prediction]) => `${program}: ${prediction.toFixed(2)}%`)
+        .join(', ');
+
       setMessages((prev) => [
         ...prev,
         {
           type: 'bot',
-          text: `${predictionMessage} ${contextMessage}`,
+          text: `${predictionMessage} ${contextMessage} Program-wise predictions: ${programPredictionsMessage}`,
         },
       ]);
     } catch (error) {
@@ -141,7 +143,6 @@ const ML = () => {
       marketingSpend: '',
       placementRate: '',
       totalIntake: '',
-      programs: [],
     });
   };
 
@@ -169,7 +170,7 @@ const ML = () => {
                   name="year"
                   placeholder="Year"
                   value={formData.year}
-                  onChange={handleInputChange} // Pass handleInputChange here
+                  onChange={handleInputChange}
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
                   disabled={loading}
@@ -184,7 +185,7 @@ const ML = () => {
                   name="totalApplications"
                   placeholder="Total Applications"
                   value={formData.totalApplications}
-                  onChange={handleInputChange} // Pass handleInputChange here
+                  onChange={handleInputChange}
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
                   disabled={loading}
@@ -199,7 +200,7 @@ const ML = () => {
                   name="averageGPA"
                   placeholder="Average GPA (out of 5)"
                   value={formData.averageGPA}
-                  onChange={handleInputChange} // Pass handleInputChange here
+                  onChange={handleInputChange}
                   min="0"
                   max="5"
                   step="0.1"
@@ -217,7 +218,7 @@ const ML = () => {
                   name="marketingSpend"
                   placeholder="Marketing Spend (in Rupees)"
                   value={formData.marketingSpend}
-                  onChange={handleInputChange} // Pass handleInputChange here
+                  onChange={handleInputChange}
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
                   disabled={loading}
@@ -232,7 +233,7 @@ const ML = () => {
                   name="placementRate"
                   placeholder="Placement Rate (%)"
                   value={formData.placementRate}
-                  onChange={handleInputChange} // Pass handleInputChange here
+                  onChange={handleInputChange}
                   min="0"
                   max="100"
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
@@ -249,28 +250,10 @@ const ML = () => {
                   name="totalIntake"
                   placeholder="Total Intake"
                   value={formData.totalIntake}
-                  onChange={handleInputChange} // Pass handleInputChange here
+                  onChange={handleInputChange}
                   className="flex-1 border-gray-300 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)]"
                   required
                   disabled={loading}
-                />
-              </div>
-
-              {/* Program Selection */}
-              <div className="flex items-center space-x-2 col-span-2">
-                <User className="w-5 h-5 text-[var(--primary-color)]" />
-                <Select
-                  isMulti
-                  options={programOptions}
-                  value={programOptions.filter((option) => formData.programs.includes(option.value))}
-                  onChange={(selectedOptions) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      programs: selectedOptions.map((option) => option.value),
-                    }))
-                  }
-                  className="flex-1 text-black"
-                  isDisabled={loading}
                 />
               </div>
             </div>
