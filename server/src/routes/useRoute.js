@@ -7,10 +7,6 @@ const router = Router();
 router.route("/register").post(
     upload.fields([
         {
-            name: "avatar",
-            maxCount: 1,
-        },
-        {
             name: "csv_file",
             maxCount: 1,
         },

@@ -30,7 +30,7 @@ def predict():
             return jsonify({"error": "Missing input parameters"}), 400
 
         # Load and prepare data
-        df = pd.read_csv(r'C:\Users\selvi\OneDrive\Documents\error.csv')
+        df = pd.read_csv(r'C:\Users\selvi\OneDrive\Documents\ei.csv')
 
         # Preprocess the data
         df['Placement Rate'] = df['Placement Rate'].str.replace('%', '').astype(float)

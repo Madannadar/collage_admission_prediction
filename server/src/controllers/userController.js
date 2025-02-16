@@ -101,8 +101,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
     const { email, is_email_verified } = req.body;
-
+    // console.log('ttt',email)
     if (!email) {
+        // console.log(email)
         return sendResponse(res, "error", null, "Email is required", 400);
     }
 
