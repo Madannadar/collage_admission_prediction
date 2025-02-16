@@ -11,7 +11,14 @@ const departmentSchema = new Schema({
         ref: "User",
     },
     subjects: [{
-        type: String,
+        subjectName: {
+            type: String,
+            required: true,
+        },
+        year: {
+            type: Number,
+            required: true,
+        },
     }],
     createdAt: {
         type: Date,

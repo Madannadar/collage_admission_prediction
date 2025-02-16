@@ -91,7 +91,7 @@ export const getSubjects = async (req, res) => {
         // Extract subjects from all found departments
         const subjects = departments.flatMap(dept => dept.subjects);
 
-        // Return the subjects array
+        // Return the subjects array with subjectName and year
         res.status(200).json({ subjects });
     } catch (error) {
         console.error("Error fetching subjects:", error);
