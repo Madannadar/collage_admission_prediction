@@ -42,10 +42,11 @@ const App = () => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-    } else if (!location.pathname === '/register' || !location.pathname === '/login' ) {
+    } else if (!['/register', '/login'].includes(location.pathname)) {
       navigate(routes.LOGIN_FORM);
     }
   }, [navigate, location.pathname]);
+  
 
   // Handle logout
   const handleLogout = () => {

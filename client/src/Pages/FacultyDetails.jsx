@@ -12,6 +12,7 @@ import { Navigate } from "react-router-dom";
 const FacultyDetails = () => {
     const [cards, setCards] = useState([
         { id: 1, facultyName: "", subjectNames: [] },
+        { id: 2, facultyName: "", subjectNames: [] }, // Default 2 cards
     ]);
 
     const subjects = [
@@ -101,7 +102,7 @@ const FacultyDetails = () => {
                             {filteredSubjects.map((subject) => (
                                 <label
                                     key={subject}
-                                    className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                    className="block px-4 py-2 hover:bg-gray-100 cursor-pointer text-black" // Ensure text is visible
                                 >
                                     <input
                                         type="checkbox"
@@ -136,9 +137,9 @@ const FacultyDetails = () => {
                             key={card.id}
                             className="flex flex-col gap-4 p-6 rounded-lg relative"
                         >
-                            <div className="flex gap-4">
+                            <div className="flex gap-4 items-center">
                                 <div className="w-1/2">
-                                    <label className="font-semibold text-black block">
+                                    <label className="font-semibold text-black block mb-2">
                                         Teacher Name:
                                     </label>
                                     <input
@@ -152,11 +153,11 @@ const FacultyDetails = () => {
                                                 e.target.value
                                             )
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500"
+                                        className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500"
                                     />
                                 </div>
                                 <div className="w-1/2">
-                                    <label className="font-semibold text-black block">
+                                    <label className="font-semibold text-black block mb-2">
                                         Select Subjects:
                                     </label>
                                     <Dropdown
@@ -172,7 +173,7 @@ const FacultyDetails = () => {
                                                     removeCard(card.id)
                                                 }
                                                 variant="outline"
-                                                className="bg-[#253985] text-white hover:bg-[hsl(228,56%,40%)] mt-8 top-3 right-3  text-xl"
+                                                className="bg-[#253985] text-white hover:bg-[hsl(228,56%,40%)] mt-8 top-3 right-3 text-xl"
                                             >
                                                 X
                                             </Button>
