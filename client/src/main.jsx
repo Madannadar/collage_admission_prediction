@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import {RouterProvider,createBrowserRouter} from 'react-router-dom';
-import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm,Timetable,Dashboard,ML} from './Pages/index.js'
+import {DepartmentForm,FacultyDetails,RegistrationForm,LoginForm,Timetable,Dashboard,ML, BudgetAllocation} from './Pages/index.js'
 import * as routes from './Routes/Routes.js'
 const router = createBrowserRouter([
   {
@@ -13,6 +13,10 @@ const router = createBrowserRouter([
       {
         path: routes.LANDING_PAGE,
         element: <Dashboard />,
+      },
+      {
+        path: routes.BUDGETALLOCATION,
+        element: <BudgetAllocation />,
       },
       {    
         path: routes.REGISTRATION,
@@ -38,6 +42,10 @@ const router = createBrowserRouter([
         path: routes.AI_PREDICTION,
         element: <ML/>,
       },
+      // {
+      //   path: routes.AI_PREDICTION,
+      //   element: <ML/>,
+      // },
     ]
   }
 ])
