@@ -90,7 +90,7 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (!otpVerified) {
       toast.error("Please verify your email with OTP before logging in.");
       return;
