@@ -23,6 +23,16 @@ const saveDepartment = asyncHandler(async (req, res) => {
             continue;
         }
 
+        // Validate subjects array
+        if (subjects && Array.isArray(subjects)) {
+            for (const subject of subjects) {
+                if (!subject.subjectName || !subject.year) {
+                    errors.push({ departmentName, collegeId, error: "Each subject must have both subjectName and year" });
+                    continue;
+                }
+            }
+        }
+
         try {
             // Check if the department already exists
             const existingDepartment = await Department.findOne({ departmentName, collegeId });
