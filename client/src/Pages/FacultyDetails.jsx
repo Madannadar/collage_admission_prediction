@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { facultyServices } from "../zServices/facultyServices";
+import { getAllSubjects } from "../zServices/SubjectServices"; // Import the getAllSubjects function
 import {
     Button,
     Tooltip,
@@ -8,6 +9,7 @@ import {
     TooltipTrigger,
 } from "../components/index.js";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 const FacultyDetails = () => {
     const [cards, setCards] = useState([
@@ -15,13 +17,22 @@ const FacultyDetails = () => {
         { id: 2, facultyName: "", subjectNames: [] }, // Default 2 cards
     ]);
 
-    const subjects = [
-        "Mathematics",
-        "Physics",
-        "Chemistry",
-        "Biology",
-        "Computer Science",
-    ];
+    const [subjects, setSubjects] = useState([]); // State to store fetched subjects
+
+    // Fetch subjects on component mount
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            try {
+                const payload = { departmentId: "67b17999ec24a3ef62aa90cd", Year: "2023" }; // Example payload
+                const response = await getAllSubjects(payload);
+                setSubjects(response.data.map(subject => subject.SubjectName)); // Extract subject names
+            } catch (error) {
+                console.error("Failed to fetch subjects:", error);
+            }
+        };
+
+        fetchSubjects();
+    }, []);
 
     const addCard = () => {
         const newCard = {

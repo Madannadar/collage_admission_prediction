@@ -16,6 +16,23 @@ const SubjectServices = async (payload) => {
     }
 };
 
+const getAllSubjects = async (payload) => {
+    try {
+        const { departmentId, Year } = payload; // Extract query parameters from payload
+        const response = await axios.get(`${BASE_URL}/get`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            params: { departmentId, Year }, // Pass query parameters
+            withCredentials: false, // Changed from true to false
+        });
+        return response.data; // Return the data from the response
+    } catch (error) {
+        throw error;
+    }
+};
+
 export {
     SubjectServices,
+    getAllSubjects,
 }
