@@ -147,9 +147,18 @@ ${Object.entries(summary.expenses)
         capitalExpenditures: "10000000",
         miscellaneous: "3000000",
       },
-      predictedSeatsRate: "110", // 110% occupancy as sample data
+      predictedSeatsRate: "11", // 11% occupancy as sample data
     });
   };
+
+  // Input styles with the specific color #1e40af
+  const inputStyle = {
+    "--primary-color": "#1e40af",
+    borderColor: "#1e40af",
+    outlineColor: "#1e40af"
+  };
+
+  const inputClassName = "mt-1 block w-full p-2 border text-blue-500 rounded-md shadow-sm focus:ring-1 focus:ring-offset-0 focus:ring-blue-800 focus:border-blue-800";
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
@@ -162,7 +171,7 @@ ${Object.entries(summary.expenses)
           <div className="mb-4 text-right">
             <button
               onClick={loadSampleData}
-              className="text-blue-600 hover:text-blue-800 underline"
+              className="text-blue-800 hover:text-blue-900 underline"
             >
               Load Sample Data
             </button>
@@ -170,7 +179,7 @@ ${Object.entries(summary.expenses)
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Revenue Sources */}
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 text-blue-700">Revenue Sources</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-800">Revenue Sources</h2>
               {Object.entries(budgetData.revenueSources).map(([key, value]) => (
                 <div key={key} className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 capitalize">
@@ -182,7 +191,8 @@ ${Object.entries(summary.expenses)
                     value={value}
                     onChange={(e) => handleInputChange(e, "revenueSources", key)}
                     placeholder={`Enter ${key.replace(/([A-Z])/g, " $1").trim()}...`}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className={inputClassName}
+                    style={inputStyle}
                   />
                 </div>
               ))}
@@ -190,7 +200,7 @@ ${Object.entries(summary.expenses)
 
             {/* Expenses */}
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 text-blue-700">Expenses</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-800">Expenses</h2>
               {Object.entries(budgetData.expenses).map(([key, value]) => (
                 <div key={key} className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 capitalize">
@@ -202,7 +212,8 @@ ${Object.entries(summary.expenses)
                     value={value}
                     onChange={(e) => handleInputChange(e, "expenses", key)}
                     placeholder={`Enter ${key.replace(/([A-Z])/g, " $1").trim()}...`}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className={inputClassName}
+                    style={inputStyle}
                   />
                 </div>
               ))}
@@ -210,7 +221,7 @@ ${Object.entries(summary.expenses)
 
             {/* Predicted Seats Rate */}
             <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 text-blue-700">Seat Occupancy Prediction</h2>
+              <h2 className="text-xl font-semibold mb-4 text-blue-800">Seat Occupancy Prediction</h2>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">
                   Predicted Seats Rate (%):
@@ -220,7 +231,8 @@ ${Object.entries(summary.expenses)
                   value={budgetData.predictedSeatsRate}
                   onChange={(e) => handleInputChange(e, "predictedSeatsRate")}
                   placeholder="Enter predicted seats rate..."
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className={inputClassName}
+                  style={inputStyle}
                 />
                 <p className="mt-1 text-sm text-gray-500">
                   Enter the predicted seat occupancy rate (e.g., 110 for 110% occupancy). Expenses will be adjusted accordingly.
@@ -232,7 +244,7 @@ ${Object.entries(summary.expenses)
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2"
                 disabled={loading}
               >
                 {loading ? "Calculating..." : "Calculate Budget"}
@@ -250,7 +262,7 @@ ${Object.entries(summary.expenses)
             >
               <div
                 className={`max-w-[70%] p-3 rounded-lg ${
-                  message.type === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+                  message.type === "user" ? "bg-blue-800 text-white" : "bg-gray-200 text-black"
                 }`}
                 style={{ whiteSpace: 'pre-line' }}
               >

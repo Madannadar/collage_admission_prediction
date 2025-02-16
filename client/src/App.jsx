@@ -28,6 +28,7 @@ const SIDEBAR_ITEMS = [
   { icon: TrendingUpDown, label: "AI Admission Prediction", path: routes.AI_PREDICTION },
   { icon: LogOut , label: "Logout" },
   { icon: TrendingUpDown , label: "Budget Allocation" , path:routes.BUDGETALLOCATION },
+  { icon: TrendingUpDown , label: "Resourse Allocation" , path:routes.RESOURSEALLOCATION },
   
 ];
 
