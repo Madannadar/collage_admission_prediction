@@ -147,11 +147,11 @@ const ML = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-color)] p-4 w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4 w-full">
       {/* Chat Header */}
       <Card className="w-full mb-4">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-[var(--primary-color)]">
+          <CardTitle className="text-2xl font-bold text-center text-blue-800">
             AI Admission Prediction
           </CardTitle>
         </CardHeader>
@@ -261,7 +261,7 @@ const ML = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-gray-800 hover:bg-gray-900 text-white mt-4"
+              className="w-full bg-gray-400 hover:bg-blue-800 hover:text-white text-white mt-4"
               disabled={loading}
             >
               {loading ? 'Predicting...' : 'Predict'}

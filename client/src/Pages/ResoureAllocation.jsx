@@ -121,13 +121,7 @@ const ResourceAllocation = () => {
         <div style={{ marginBottom: '1rem', textAlign: 'right' }}>
           <button
             onClick={useSampleData}
-            style={{ 
-              color: '#1e40af', 
-              textDecoration: 'underline',
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer'
-            }}
+            className='text-blue-800 hover:text-white'
           >
             Load Sample Data
           </button>
@@ -226,15 +220,7 @@ const ResourceAllocation = () => {
           <div style={{ textAlign: 'center' }}>
             <button 
               type="submit" 
-              style={{ 
-                backgroundColor: '#1e40af', 
-                color: 'white', 
-                padding: '0.5rem 1.5rem', 
-                borderRadius: '0.375rem', 
-                border: 'none',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-                cursor: 'pointer'
-              }}
+              className='text-blue-800 hover:text-white '
             >
               Calculate Requirements
             </button>
