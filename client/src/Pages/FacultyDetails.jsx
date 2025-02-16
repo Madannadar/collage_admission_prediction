@@ -25,7 +25,7 @@ const FacultyDetails = () => {
             try {
                 const payload = {}; // Example payload
                 const response = await getAllSubjects(payload);
-                setSubjects(response.subjects); // Extract subject names
+                setSubjects(response.subjects.map((i)=>i.subjectName)); // Extract subject names
             } catch (error) {
                 console.error("Failed to fetch subjects:", error);
             }
