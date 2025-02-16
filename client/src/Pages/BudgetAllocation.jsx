@@ -171,7 +171,17 @@ ${Object.entries(summary.expenses)
           <div className="mb-4 text-right">
             <button
               onClick={loadSampleData}
+<<<<<<< HEAD
+              style={{ 
+                color: '#1e40af', 
+                textDecoration: 'underline',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+=======
               className="text-blue-800 hover:text-white "
+>>>>>>> 04f0189f289e0ef56f0edca66b49a937f294db97
             >
               Load Sample Data
             </button>

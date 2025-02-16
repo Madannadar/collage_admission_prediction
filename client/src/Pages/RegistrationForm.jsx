@@ -129,41 +129,52 @@ const RegistrationForm = () => {
     };
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
-  
-      if (!otpVerified) {
-          setError("Please verify your email with OTP before registering.");
-          return;
-      }
-  
-      if (!csv_file) {
-          setError("Please upload a CSV file.");
-          return;
-      }
-  
-      try {
-          // Create FormData object
-          const formDataToSend = new FormData();
-          formDataToSend.append("collegeName", formData.collegeName);
-          formDataToSend.append("email", formData.email);
-          formDataToSend.append("username", formData.username);
-          formDataToSend.append("telephone", formData.telephone);
-          formDataToSend.append("address", formData.address);
-          formDataToSend.append("is_email_verified", is_email_verified);
-          formDataToSend.append("csv_file", csv_file);  // Append the CSV file
-  
-          const response = await registerServices(formDataToSend);
-  
-          if (response.data) {
-              localStorage.setItem("user", JSON.stringify(response.data));
-              toast.success("Registration successful!");
-              navigate("/DepartmentForm");
-          }
-      } catch (error) {
-          toast.error("Registration failed. Please try again.");
-          setError("Registration failed. Please try again.");
-      }
-  };
+        e.preventDefault();
+
+        if (!otpVerified) {
+            setError("Please verify your email with OTP before registering.");
+            return;
+        }
+
+        if (!csv_file) {
+            setError("Please upload a CSV file.");
+            return;
+        }
+
+        try {
+            // Create FormData object
+            const formDataToSend = new FormData();
+            formDataToSend.append("collegeName", formData.collegeName);
+            formDataToSend.append("email", formData.email);
+            formDataToSend.append("username", formData.username);
+            formDataToSend.append("telephone", formData.telephone);
+            formDataToSend.append("address", formData.address);
+            formDataToSend.append("is_email_verified", is_email_verified);
+            formDataToSend.append("csv_file", csv_file);  // Append the CSV file
+
+            const response = await registerServices(formDataToSend);
+
+            if (response.data) {
+                localStorage.setItem("user", JSON.stringify(response.data));
+                toast.success("Registration successful!");
+                navigate("/DepartmentForm");
+            }
+        } catch (error) {
+            toast.error("Registration failed. Please try again.");
+            setError("Registration failed. Please try again.");
+        }
+    };
+
+    const downloadSampleCSV = () => {
+        const csvContent = "data:text/csv;charset=utf-8,Year,Total Applications,Average CGPA,Marketing Spend,Placement Rate,Program,Total Intake,Total Admissions\n";
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "sample.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/30 p-4 z-50">
@@ -348,6 +359,13 @@ const RegistrationForm = () => {
                                 className="w-full py-2"
                                 required
                             />
+                            <Button
+                                type="button"
+                                onClick={downloadSampleCSV}
+                                className="w-full bg-[#253985] hover:bg-[hsl(228,56%,40%)] text-white mt-2"
+                            >
+                                Download Sample CSV
+                            </Button>
                         </div>
 
                         <Button
