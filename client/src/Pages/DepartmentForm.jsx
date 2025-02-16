@@ -1,5 +1,8 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
+import {SubjectServices} from "../zServices/SubjectServices";
+import {DepartmentServices} from "../zServices/DepartmentServices";
 
 const DepartmentForm = ({ onRemove }) => {
     const [formData, setFormData] = useState({
@@ -58,7 +61,7 @@ const DepartmentForm = ({ onRemove }) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const departmentPayload = {
             departmentName: formData.departmentName,
@@ -79,9 +82,11 @@ const DepartmentForm = ({ onRemove }) => {
                     Year: year.replace("year", ""),
                 }))
         );
-
+        
         console.log("Department Payload:", departmentPayload);
         console.log("Subjects Payload:", subjectsPayload);
+        await SubjectServices(subjectsPayload);
+        await DepartmentServices(departmentPayload);
         Navigate("/FacultyDetails");
     };
 
