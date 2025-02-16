@@ -1,16 +1,18 @@
-// models/News.js
 import mongoose, { Schema } from "mongoose";
 
 const departmentSchema = new Schema({
     departmentName: {
         type: String,
         required: true,
-        unique:true,
+        unique: true,
     },
-    collegeId:{
+    collegeId: {
         type: Schema.Types.ObjectId,
-        ref : "User",
+        ref: "User",
     },
+    subjects: [{
+        type: String,
+    }],
     createdAt: {
         type: Date,
         default: Date.now,
