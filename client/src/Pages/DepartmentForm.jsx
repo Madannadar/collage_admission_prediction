@@ -132,10 +132,22 @@ const DepartmentForm = ({ onRemove }) => {
         try {
             // Prepare payloads for all forms
             const departmentPayloads = [];
-            const subjectsPayloads = [];
+            const subjects = [];
 
             forms.forEach((form) => {
                 // Department payload
+                const subjectsPayload = Object.entries(
+                    form.yearWiseSubjects
+                ).flatMap(([year, subjects]) =>
+                    subjects
+                        .filter((subject) => subject.trim() !== "")
+                        .map((subject) => ({
+                            subjectName: subject,
+                            year: year.replace("year", ""),
+                        }))
+                );
+                subjects.push(...subjectsPayload);
+
                 const departmentPayload = {
                     departmentName: form.departmentName,
                     collegeId: user.data._id,
@@ -144,35 +156,26 @@ const DepartmentForm = ({ onRemove }) => {
                     noOfFaculties: form.noOfFaculties,
                     noOfClassrooms: form.noOfClassrooms,
                     noOfRooms: form.noOfRooms,
+                    subjects : subjects,
                 };
                 console.log("departmentPayload", departmentPayload);
                 
                 departmentPayloads.push(departmentPayload);
 
                 // Subjects payload
-                const subjectsPayload = Object.entries(
-                    form.yearWiseSubjects
-                ).flatMap(([year, subjects]) =>
-                    subjects
-                        .filter((subject) => subject.trim() !== "")
-                        .map((subject) => ({
-                            SubjectName: subject,
-                            Year: year.replace("year", ""),
-                            DepartmentName: form.departmentName, // Assuming subjects are linked to departments
-                        }))
-                );
-                subjectsPayloads.push(...subjectsPayload);
+
             });
 
+            // departmentPayloads.push(subjects)
             // Log payloads for debugging
             console.log("Department Payloads:", departmentPayloads);
-            console.log("Subjects Payloads:", subjectsPayloads);
+            console.log("Subjects Payloads:", subjects);
 
             // Send department data
-            await DepartmentServices({ departments: departmentPayloads });
+            await DepartmentServices({ departments: departmentPayloads});
 
             // Send subjects data
-            await SubjectServices(subjectsPayloads);
+            // await SubjectServices(subjectsPayloads);
 
             // Navigate after successful submission
             navigate("/FacultyDetails"); // Use the navigate function

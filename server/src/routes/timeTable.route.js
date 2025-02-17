@@ -1,9 +1,12 @@
 import express from "express";
-import { generateTimeTable, getAllTimeTable } from "../controllers/timeTable.controller.js";
+import { generateTimetable,getTimetable } from "../controllers/timeTable.controller.js";
 
 const router = express.Router();
 
-router.post("/generate/:userId", generateTimeTable);
-router.get("/all/:userId", getAllTimeTable);
+router.post("/generate/:collegeId", generateTimetable);
+
+// GET Timetable by College ID
+router.get("/:collegeId",getTimetable);
+
 
 export default router;

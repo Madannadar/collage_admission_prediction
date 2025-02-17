@@ -1,10 +1,11 @@
 import { Facalty } from "../models/FacultyModal.js";
 import { Subject } from "../models/SubjectModel.js"; // Import the Subject model
+import { Department } from "../models/departmentModel.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import sendResponse from "../utils/apiResonse.js";
 
 const saveFacalty = asyncHandler(async (req, res) => {
-    const faculties = req.body; // Array of faculty objects
+    const faculties = req.body;
 
     if (!Array.isArray(faculties)) {
         return sendResponse(res, "error", null, "Expected an array of faculties", 400);
@@ -15,17 +16,24 @@ const saveFacalty = asyncHandler(async (req, res) => {
             faculties.map(async (faculty) => {
                 const { facultyName, subjectNames } = faculty;
 
-                // Find subject IDs based on subject names
-                const subjectIds = await Promise.all(
-                    subjectNames.map(async (subjectName) => {
-                        const subject = await Subject.findOne({ SubjectName: subjectName });
-                        if (!subject) {
-                            throw new Error(`Subject not found: ${subjectName}`);
-                        }
-                        return subject._id;
-                    })
-                );
+                // Find all departments to match subjects
+                const departments = await Department.find({});
 
+                // Collect subject IDs by matching subject names
+                const subjectIds = [];
+                departments.forEach((dept) => {
+                    dept.subjects.forEach((sub) => {
+                        if (subjectNames.includes(sub.subjectName)) {
+                            subjectIds.push(sub._id);
+                        }
+                    });
+                });
+
+                if (subjectIds.length === 0) {
+                    throw new Error(`No matching subjects found for ${facultyName}`);
+                }
+
+                // Check if faculty already exists
                 const existingFaculty = await Facalty.findOne({ facultyName });
 
                 if (existingFaculty) {
@@ -48,6 +56,7 @@ const saveFacalty = asyncHandler(async (req, res) => {
         return sendResponse(res, "error", null, error.message, 500);
     }
 });
+
 
 const getFaculties = asyncHandler(async (req, res) => {
     try {
