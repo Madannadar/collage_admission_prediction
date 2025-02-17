@@ -171,13 +171,7 @@ ${Object.entries(summary.expenses)
           <div className="mb-4 text-right">
             <button
               onClick={loadSampleData}
-              style={{ 
-                color: '#1e40af', 
-                textDecoration: 'underline',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer'
-              }}
+              className='text-blue-800 hover:text-white'
             >
               Load Sample Data
             </button>
@@ -250,7 +244,7 @@ ${Object.entries(summary.expenses)
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-blue-800 text-white px-6 py-2 rounded-md hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2"
+                className='text-blue-800 hover:text-white'
                 disabled={loading}
               >
                 {loading ? "Calculating..." : "Calculate Budget"}

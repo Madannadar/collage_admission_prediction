@@ -95,22 +95,8 @@ const ResourceAllocation = () => {
   };
 
   return (
-    <div style={{ 
-      padding: '24px', 
-      fontFamily: 'Arial, sans-serif', 
-      backgroundColor: '#f3f4f6', 
-      borderRadius: '0.5rem',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      maxWidth: '1200px',
-      margin: '0 auto'
-    }}>
-      <h1 style={{ 
-        fontSize: '1.875rem', 
-        fontWeight: 'bold', 
-        textAlign: 'center', 
-        marginBottom: '1.5rem', 
-        color: '#000000' 
-      }}>Resource Input Page</h1>
+    <div className="container mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+      <h1 className="text-3xl  text-center mb-6 text-blue-800">Resource Input Page</h1>
 
       <div style={{ 
         backgroundColor: 'white', 
@@ -135,12 +121,12 @@ const ResourceAllocation = () => {
             boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
             marginBottom: '1.5rem'
           }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', color: '#000000' }}>
+            <h2 className="text-xl font-semibold mb-4 text-blue-800">
               Resource Inputs
             </h2>
 
             <div className="mb-4">
-            <label className="block text-sm font-bold text-black mb-2">
+            <label className="block text-sm  text-black mb-2">
                 Number of Students:
             </label>
             <input
@@ -153,7 +139,7 @@ const ResourceAllocation = () => {
 
 
             <div className="mb-4">
-            <label className="block text-sm font-bold text-black mb-2">
+            <label className="block text-sm  text-black mb-2">
                 Number of Classrooms:
             </label>
             <input
@@ -166,7 +152,7 @@ const ResourceAllocation = () => {
 
 
             <div className="mb-4">
-            <label className="block text-sm font-bold text-black mb-2">
+            <label className="block text-sm  text-black mb-2">
                 Capacity of Each Classroom:
             </label>
             <input
@@ -179,7 +165,7 @@ const ResourceAllocation = () => {
 
 
             <div className="mb-4">
-            <label className="block text-sm font-bold text-black mb-2">
+            <label className="block text-sm  text-black mb-2">
                 Number of Labs:
             </label>
             <input
@@ -192,7 +178,7 @@ const ResourceAllocation = () => {
 
 
             <div className="mb-4">
-            <label className="block text-sm font-bold text-black mb-2">
+            <label className="block text-sm  text-black mb-2">
                 Capacity of Each Lab:
             </label>
             <input
@@ -204,7 +190,7 @@ const ResourceAllocation = () => {
             </div>
 
             <div className="mb-4">
-            <label className="block text-sm font-bold text-black mb-2">
+            <label className="block text-sm  text-black mb-2">
                 Number of Faculty:
             </label>
             <input
@@ -235,7 +221,7 @@ const ResourceAllocation = () => {
         borderRadius: '0.375rem', 
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
       }}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '1rem', color: '#000000' }}>
+        <h2 className="text-xl font-semibold mb-4 text-blue-800" >
           Current Input Values
         </h2>
         <p style={{ color: '#000000' }}>Number of Students: {numberOfStudents}</p>
