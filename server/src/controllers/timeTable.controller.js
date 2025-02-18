@@ -1,112 +1,151 @@
-import { Timetable } from "../models/TimeTable.js";
-import { Department } from "../models/departmentModel.js";
-import { Subject } from "../models/SubjectModel.js";
-import { Facalty } from "../models/FacultyModal.js";
+import mongoose from "mongoose";
 import { User } from "../models/userModal.js";
+import { Department } from "../models/departmentModel.js";
+import { Facalty } from "../models/FacultyModal.js";
+import Timetable from "../models/TimeTable.js";
 
-// Helper function to check time overlaps
-const parseTime = (timeStr) => {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes;
-};
+const generateTimetable = async (req, res) => {
+    const { collegeId } = req.params;
 
-const checkTimeOverlap = (existingSlots, newDay, newStart, newEnd) => {
-    return existingSlots.some(slot => {
-        if (slot.day !== newDay) return false;
-        const slotStart = parseTime(slot.startTime);
-        const slotEnd = parseTime(slot.endTime);
-        return (
-            (newStart >= slotStart && newStart < slotEnd) ||
-            (newEnd > slotStart && newEnd <= slotEnd) ||
-            (newStart <= slotStart && newEnd >= slotEnd)
-        );
-    });
-};
-
-// Generate timetable
-const generateTimeTable = async (req, res) => {
     try {
-        const { userId } = req.params;
-        const { days, timeSlots } = req.body;
-
-        if (!days || !timeSlots) {
-            return res.status(400).json({ message: "Days and timeSlots are required" });
+        // Step 1: Fetch the College Details
+        const college = await User.findById(collegeId);
+        if (!college) {
+            return res.status(404).json({ message: "College not found" });
         }
 
-        const user = await User.findById(userId);
-        if (!user) return res.status(404).json({ message: "User not found" });
+        // Step 2: Fetch all departments associated with the college
+        const departments = await Department.find({ collegeId: collegeId });
+        if (!departments.length) {
+            return res.status(404).json({ message: "No departments found for this college" });
+        }
 
-        const departments = await Department.find({ collegeId: userId });
-        if (!departments.length) return res.status(404).json({ message: "No departments found" });
+        // Step 3: Initialize the timetable structure
+        const timetable = [];
 
-        // Delete existing timetables for these departments
-        const departmentIds = departments.map(dept => dept._id);
-        await Timetable.deleteMany({ departmentId: { $in: departmentIds } });
-
+        // Step 4: Iterate through each department to generate its timetable
         for (const department of departments) {
-            const subjects = await Subject.find({ departmentId: department._id });
-            if (!subjects.length) continue;
+            console.log(`Processing department: ${department.departmentName}`);
 
-            const subjectIds = subjects.map(subj => subj._id);
-            const faculties = await Facalty.find({ subjectIds: { $in: subjectIds } });
-            if (!faculties.length) continue;
+            const departmentTimetable = {
+                departmentName: department.departmentName,
+                subjects: []
+            };
 
-            const entries = [];
-            for (const day of days) {
-                for (const timeSlot of timeSlots) {
-                    const randomSubject = subjects[Math.floor(Math.random() * subjects.length)];
-                    const subjectFaculties = faculties.filter(faculty => 
-                        faculty.subjectIds.some(subjId => subjId.equals(randomSubject._id))
-                    );
-                    if (!subjectFaculties.length) continue;
+            // Step 5: Access subjects directly from the department document
+            const subjects = department.subjects;
+            console.log(`Subjects found for department ${department.departmentName}:`, subjects);
 
-                    const randomFaculty = subjectFaculties[Math.floor(Math.random() * subjectFaculties.length)];
-                    const isFacultyBooked = entries.some(entry => 
-                        entry.day === day &&
-                        entry.startTime === timeSlot.startTime &&
-                        entry.endTime === timeSlot.endTime &&
-                        entry.facultyId.equals(randomFaculty._id)
-                    );
-
-                    if (!isFacultyBooked) {
-                        entries.push({
-                            day,
-                            ...timeSlot,
-                            subjectId: randomSubject._id,
-                            facultyId: randomFaculty._id,
-                        });
-                    }
-                }
+            if (!subjects.length) {
+                console.log(`No subjects found for department: ${department.departmentName}`);
+                continue; // Skip to the next department if no subjects are found
             }
 
-            const timetable = new Timetable({ departmentId: department._id, entries });
-            await timetable.save();
+            // Step 6: Generate timetable for each subject
+            for (const subject of subjects) {
+                console.log(`Processing subject: ${subject.subjectName}`);
+
+                // Step 7: Fetch faculty for the subject
+                const faculty = await Facalty.find({ subjectIds: subject._id });
+                console.log(`Faculty found for subject ${subject.subjectName}:`, faculty);
+
+                if (!faculty.length) {
+                    console.log(`No faculty found for subject: ${subject.subjectName}`);
+                    continue; // Skip to the next subject if no faculty are found
+                }
+
+                // Step 8: Generate time slots for the subject
+                const timeSlots = generateTimeSlots();
+
+                // Step 9: Assign faculty to time slots without clashes
+                const subjectTimetable = {
+                    subjectName: subject.subjectName,
+                    year: subject.year,
+                    faculty: faculty.map(f => f.facultyName),
+                    timeSlots: assignTimeSlotsWithoutClash(timeSlots, faculty, subject)
+                };
+
+                departmentTimetable.subjects.push(subjectTimetable);
+            }
+
+            timetable.push(departmentTimetable);
         }
 
-        res.status(201).json({ message: "Timetables generated successfully" });
+        const newTimetable = new Timetable({
+            collegeId: collegeId,
+            timetable: timetable
+        });
+
+        await newTimetable.save();
+
+        // Step 12: Send the generated timetable as response
+        res.status(200).json({ timetable });
     } catch (error) {
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        console.error("Error generating timetable:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
 
-// Get all timetables
-const getAllTimeTable = async (req, res) => {
+// Helper function to generate time slots
+const generateTimeSlots = () => {
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    const timeSlots = ["9:00 AM - 10:00 AM", "10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "1:00 PM - 2:00 PM", "2:00 PM - 3:00 PM", "3:00 PM - 4:00 PM"];
+
+    const slots = [];
+    for (const day of days) {
+        for (const time of timeSlots) {
+            slots.push({ day, time, isBooked: false });
+        }
+    }
+
+    return slots;
+};
+
+// Helper function to assign time slots without clashes
+const assignTimeSlotsWithoutClash = (timeSlots, faculty, subject) => {
+    const assignedSlots = [];
+    let slotIndex = 0;
+
+    // Determine the number of slots needed for the subject
+    const slotsNeeded = 3; // Example: Assign 3 slots per subject
+
+    for (let i = 0; i < slotsNeeded; i++) {
+        while (slotIndex < timeSlots.length && timeSlots[slotIndex].isBooked) {
+            slotIndex++;
+        }
+
+        if (slotIndex < timeSlots.length) {
+            timeSlots[slotIndex].isBooked = true;
+            assignedSlots.push({
+                day: timeSlots[slotIndex].day,
+                time: timeSlots[slotIndex].time,
+                faculty: faculty[i % faculty.length].facultyName // Rotate through faculty members
+            });
+        }
+    }
+
+    return assignedSlots;
+};
+
+const getTimetable = async (req, res) => {
+    const { collegeId } = req.params;
+
     try {
-        const { userId } = req.params;
+        // Step 1: Find the timetable for the given collegeId
+        const timetable = await Timetable.findOne({ collegeId: collegeId });
 
-        const departments = await Department.find({ collegeId: userId });
-        const departmentIds = departments.map(dept => dept._id);
+        // Step 2: Check if the timetable exists
+        if (!timetable) {
+            return res.status(404).json({ message: "Timetable not found for this college" });
+        }
 
-        const timetables = await Timetable.find({ departmentId: { $in: departmentIds } })
-            .populate('departmentId')
-            .populate('entries.subjectId')
-            .populate('entries.facultyId');
-
-        res.status(200).json(timetables);
+        // Step 3: Send the timetable as a response
+        res.status(200).json({ timetable });
     } catch (error) {
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        console.error("Error fetching timetable:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-
 };
 
-export { generateTimeTable, getAllTimeTable };
+
+export { generateTimetable,getTimetable };

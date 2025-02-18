@@ -15,7 +15,23 @@ const facultyServices = async (payload) => {
         throw error;
     }
 };
+const timeServices = async (collegeId) => {
+    try {
+        const response = await axios.get(`http://localhost:8001/api/v1/timetable/${collegeId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: false, // Changed from true to false
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 
 export {
     facultyServices,
+    timeServices
 }
